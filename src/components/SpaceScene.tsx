@@ -4,7 +4,11 @@ import * as THREE from 'three';
 import createStars from './StarField';
 import getSoilLayer from './soil/SoilField';
 import getWaterLayer from './water/WaterField';
+import getCloudLayer from './cloud/CloudField';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+let Gtime = 0;
+let cloudRotation = 0.0;
 
 const SpaceScene: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,15 +31,18 @@ const SpaceScene: React.FC = () => {
       // Created orbitalControl for planet
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
       orbitalControl.maxDistance = 100;
-      orbitalControl.minDistance = 3;
-      orbitalControl.enableDamping = true;
-      orbitalControl.dampingFactor = 0.05;
+      orbitalControl.minDistance = 5;
+      // orbitalControl.enableDamping = true;
+      // orbitalControl.dampingFactor = 0.05;
 
       // Soil Layer
       const soilMesh = getSoilLayer();
 
       //Water Layer
       const waterMesh = getWaterLayer({index:6});
+
+      //Cloud Layer
+      const {cloudMaterial_, cloudQuad} = getCloudLayer({camera_:camera,cloudInnerRadius:3.0,cloudOuterRadius:3.25, percentageCloud:0.45,currentPreset_:"dense"});
       
       // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       // scene.add(sphere);
@@ -46,6 +53,7 @@ const SpaceScene: React.FC = () => {
       // planetGroup.add(sphere);
       planetGroup.add(soilMesh);
       planetGroup.add(waterMesh);
+      planetGroup.add(cloudQuad);
       scene.add(planetGroup);
 
       // Add lighting
@@ -63,12 +71,17 @@ const SpaceScene: React.FC = () => {
       let isKeyPressed = false;
       let isWobbling = false;
 
-      const onKeyDown = (event:KeyboardEvent) => {
-
+      const onKeyDown = (event:KeyboardEvent) => { // first key is toggled then checked which key
+        if (!isKeyPressed) {
+          isKeyPressed = true;
+        }
       }
 
-      const onKeyUp = (event:KeyboardEvent) => {
-
+      const onKeyUp = (event:KeyboardEvent) => { // add key lift instruction/condition first then this 
+        if(isKeyPressed)
+        {
+          isKeyPressed = false;
+        }
       }
 
       // Add event listeners
@@ -83,6 +96,37 @@ const SpaceScene: React.FC = () => {
         stars.rotation.x += 0.0001;
         stars.rotation.y += 0.0002;
         planetGroup.rotation.y += 0.0009
+
+        Gtime += 0.01
+        camera.updateMatrix();
+        if(cloudMaterial_ && directionalLight)
+        {
+          const rotationSpeed = 0.01;
+          const cameraDistance = camera.position.length();
+          const dynamicCoverage = THREE.MathUtils.mapLinear(
+              cameraDistance,
+              2.0, 7.0,    // Distance range (close to far)
+              0.2, 0.8    // Coverage range (sparse to dense)
+              );
+          const frustumHeight = 2.0 * Math.tan((camera.fov * Math.PI / 180) / 2.0) * cameraDistance;
+          
+          cloudRotation -= rotationSpeed;
+
+          cloudMaterial_.uniforms.u_weatherScale.value = 0.8 + Math.sin(Gtime * 0.1) * 0.2;
+          cloudMaterial_.uniforms.u_weatherStrength.value = 0.7 + Math.sin(Gtime * 0.05) * 0.2;
+          cloudMaterial_.uniforms.u_cloudClumping.value = 0.6 + Math.sin(Gtime * 0.08) * 0.3;
+          
+          // ===============================
+          // UPDATE CORE UNIFORMS
+          // ===============================
+          cloudMaterial_.uniforms.u_time.value = Gtime;
+          cloudMaterial_.uniforms.u_cloudRotation.value = cloudRotation;
+          cloudMaterial_.uniforms.u_cameraPos.value.copy(camera.position);
+          cloudMaterial_.uniforms.u_cameraWorldMatrix.value.copy(camera.matrixWorld);
+          cloudMaterial_.uniforms.u_sunDirection.value.copy(directionalLight.position).normalize();
+          cloudMaterial_.uniforms.u_cloudCover.value = Math.max(0.1, Math.min(0.9, dynamicCoverage));
+          cloudMaterial_.uniforms.u_cameraFrustumSize.value = frustumHeight;
+        }
 
         renderer.render(scene, camera);
         animationId = requestAnimationFrame(animate);
