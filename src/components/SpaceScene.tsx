@@ -2,6 +2,8 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import createStars from './StarField';
+import getSoilLayer from './soil/SoilField';
+import getWaterLayer from './water/WaterField';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const SpaceScene: React.FC = () => {
@@ -24,32 +26,40 @@ const SpaceScene: React.FC = () => {
 
       // Created orbitalControl for planet
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
-      orbitalControl.maxDistance = 100
-      orbitalControl.minDistance = 3
+      orbitalControl.maxDistance = 100;
+      orbitalControl.minDistance = 3;
+      orbitalControl.enableDamping = true;
+      orbitalControl.dampingFactor = 0.05;
       
       // Created Basic Earth like sphere
-      const sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
-      const sphereMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0x4488ff,
-        shininess: 30,
-        transparent: true,
-        opacity: 0.9
-      });
+      // const sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
+      // const sphereMaterial = new THREE.MeshPhongMaterial({ 
+      //   color: 0x4488ff,
+      //   shininess: 30
+      // });
+
+      // Soil Layer
+      const soilMesh = getSoilLayer();
+
+      //Water Layer
+      const waterMesh = getWaterLayer({index:6});
       
-      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      scene.add(sphere);
+      // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      // scene.add(sphere);
 
       // Create a group to hold both sphere and additional texture layers 
       // TODO: Add layers
       const planetGroup = new THREE.Group();
-      planetGroup.add(sphere);
+      // planetGroup.add(sphere);
+      planetGroup.add(soilMesh);
+      planetGroup.add(waterMesh);
       scene.add(planetGroup);
 
       // Add lighting
       const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
       scene.add(ambientLight);
       
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
       directionalLight.position.set(-1, 1, 1);
       scene.add(directionalLight);
 
@@ -58,32 +68,14 @@ const SpaceScene: React.FC = () => {
 
       // state variable
       let isKeyPressed = false;
-      let isWobbling = true;
+      let isWobbling = false;
 
       const onKeyDown = (event:KeyboardEvent) => {
-        if(event.key == 'w' && !isKeyPressed)
-        {
-          isKeyPressed = true;
-          if(!isWobbling)
-          {
-            isWobbling = true;
-          }
-          else
-          {
-            isWobbling = false;
-          }
-        }
+
       }
 
       const onKeyUp = (event:KeyboardEvent) => {
-        if(event.key == 'm')
-        {
-          isKeyPressed = false;
-        }
-        if(event.key == 'w')
-        {
-          isKeyPressed = false;
-        }
+
       }
 
       // Add event listeners
@@ -132,8 +124,8 @@ const SpaceScene: React.FC = () => {
         cancelAnimationFrame(animationId);
         
         // Clean up Three.js resources
-        sphereGeometry.dispose();
-        sphereMaterial.dispose();
+        // sphereGeometry.dispose();
+        // sphereMaterial.dispose();
         stars.geometry.dispose();
         (stars.material as THREE.Material).dispose();
             
