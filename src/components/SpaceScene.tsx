@@ -6,6 +6,7 @@ import getSoilLayer from './soil/SoilField';
 import getWaterLayer from './water/WaterField';
 import getCloudLayer from './cloud/CloudField';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import getFresnelMat  from './fresnel/fresnelField';
 
 let Gtime = 0;
 let cloudRotation = 0.0;
@@ -42,11 +43,15 @@ const SpaceScene: React.FC = () => {
       const waterMesh = getWaterLayer({index:6});
 
       //Cloud Layer
-      const {cloudMaterial_, cloudQuad} = getCloudLayer({camera_:camera,cloudInnerRadius:3.0,cloudOuterRadius:3.25, percentageCloud:0.45,currentPreset_:"dense"});
+      const {cloudMaterial_, cloudQuad} = getCloudLayer({camera_:camera,cloudInnerRadius:3.0,cloudOuterRadius:3.25, percentageCloud:0.35,currentPreset_:"random", cloudColor:new THREE.Color(1,1,1)});
       
+      //Fresnel Layer
+      const glowLayer = getFresnelMat({radius:2.35, rimHex:0xffffdd});
+
       // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       // scene.add(sphere);
 
+      // orbitalControl.dampingFactor = 0.05;
       // Create a group to hold both sphere and additional texture layers 
       // TODO: Add layers
       const planetGroup = new THREE.Group();
@@ -54,6 +59,7 @@ const SpaceScene: React.FC = () => {
       planetGroup.add(soilMesh);
       planetGroup.add(waterMesh);
       planetGroup.add(cloudQuad);
+      planetGroup.add(glowLayer);
       scene.add(planetGroup);
 
       // Add lighting
@@ -101,7 +107,7 @@ const SpaceScene: React.FC = () => {
         camera.updateMatrix();
         if(cloudMaterial_ && directionalLight)
         {
-          const rotationSpeed = 0.01;
+          const rotationSpeed = 0.005;
           const cameraDistance = camera.position.length();
           const dynamicCoverage = THREE.MathUtils.mapLinear(
               cameraDistance,

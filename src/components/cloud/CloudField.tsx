@@ -10,7 +10,7 @@ const cloudPresets_:{[key: string]: {
     'storm': { seed1: 13579, seed2: 24680, seed3: 33333 },    // Dramatic storm systems
     'wispy': { seed1: 97531, seed2: 86420, seed3: 44444 },    // Thin, cirrus-like clouds
     'dense': { seed1: 19283, seed2: 37465, seed3: 55555 },    // Heavy, overcast coverage
-    'random': {seed1:99801, seed2:65980, seed3: 12309}   
+    'random': {seed1:10000, seed2:99999, seed3: 99999}   
 };
 
 function getVertexShader_() {
@@ -576,7 +576,7 @@ const  getCloudLayer = ({
         cloudInnerRadius? : number, 
         cloudOuterRadius?: number}) => {
 
-            
+
         // Use a full-screen quad for ray marching (the shader does all the 3D work)
         const cloudGeometry = new THREE.PlaneGeometry(2, 2);
         const cloudMaterial_ = new THREE.ShaderMaterial({
