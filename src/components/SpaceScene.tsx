@@ -30,13 +30,6 @@ const SpaceScene: React.FC = () => {
       orbitalControl.minDistance = 3;
       orbitalControl.enableDamping = true;
       orbitalControl.dampingFactor = 0.05;
-      
-      // Created Basic Earth like sphere
-      // const sphereGeometry = new THREE.SphereGeometry(2, 32, 32);
-      // const sphereMaterial = new THREE.MeshPhongMaterial({ 
-      //   color: 0x4488ff,
-      //   shininess: 30
-      // });
 
       // Soil Layer
       const soilMesh = getSoilLayer();
@@ -87,14 +80,10 @@ const SpaceScene: React.FC = () => {
       
       const animate = () => { //TODO Add layers rotation
         // Slowly rotate stars for space effect
-        // stars.rotation.x += 0.0001;
-        // stars.rotation.y += 0.0002;
-        
-        // Add subtle floating animation to planet when not dragging
-        // if (!isDragging && isWobbling) {
-        //   planetGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
-        // }
-        
+        stars.rotation.x += 0.0001;
+        stars.rotation.y += 0.0002;
+        planetGroup.rotation.y += 0.0009
+
         renderer.render(scene, camera);
         animationId = requestAnimationFrame(animate);
       };
