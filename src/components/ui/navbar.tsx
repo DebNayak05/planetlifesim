@@ -39,10 +39,10 @@ export default function Navbar({ className }: { className?: string }) {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <span className="text-xl font-bold">ExoCosmos</span>
         <div className="space-x-6">
-          <Link className="hover:underline" href="/checkoutPlanets">
+          <Link className="hover:underline" href="/checkoutplanets">
             Explore Planets
           </Link>
-          <Link href="#about" className="hover:underline">
+          <Link href="/#about" className="hover:underline">
             About ExoCosmos
           </Link>
         </div>
