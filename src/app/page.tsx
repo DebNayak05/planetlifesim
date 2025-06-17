@@ -7,7 +7,7 @@ import { BackgroundBeams } from "@/components/ui/backgroundbeams";
 import Link from "next/link";
 export default function LandingPage() {
   return (
-    <div className="bg-[url(/images/bg-image.png)] bg-center scroll-smooth overflow-y-scroll no-scrollbar">
+    <div className="bg-[url(/images/bg-image.png)] bg-[center_60%] scroll-smooth overflow-y-scroll no-scrollbar">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <BackgroundBeams />
       </div>
@@ -15,13 +15,16 @@ export default function LandingPage() {
       <Navbar />
       <main className="flex-grow">
         <div className="w-full flex justify-center items-center h-screen ">
-          <div className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto ">
+          <div className="text-2xl px-4 md:text-4xl lg:text-5xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto translate-y-[-50%]">
             <p>
               <Highlight className="text-black dark:text-white">
                 Worlds of Tomorrow
               </Highlight>
             </p>
-            <p>Discover Their Potential for Life.</p>
+            <p>
+              Discover Their Potential for Life.
+            </p>
+
             <Button className="w-48 justify-center text-base font-semibold tracking-wide m-2">
               <a href="#about">About us</a>
             </Button>
