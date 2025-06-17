@@ -126,9 +126,11 @@ export const HeroHighlight = ({
 export const Highlight = ({
   children,
   className,
+  delay = 0.5, // Default delay
 }: {
   children: React.ReactNode;
   className?: string;
+  delay?: number; // Add delay prop
 }) => {
   return (
     <motion.span
@@ -141,17 +143,13 @@ export const Highlight = ({
       transition={{
         duration: 2,
         ease: "linear",
-        delay: 0.5,
+        delay: delay, // Use the dynamic delay
       }}
       style={{
         backgroundRepeat: "no-repeat",
         backgroundPosition: "left center",
         display: "inline",
       }}
-      // className={cn(
-      //   `relative inline-block rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 px-1 pb-1 dark:from-indigo-500 dark:to-purple-500`,
-      //   className
-      // )}
       className={cn(
         `relative inline-block rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 px-1 pb-1 dark:from-blue-500 dark:to-sky-800`,
         className

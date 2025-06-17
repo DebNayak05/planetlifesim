@@ -143,6 +143,15 @@
   }
 }
 
-/* html {
-  scroll-behavior: smooth;
-} */
+.element {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.element::-webkit-scrollbar {
+  display: none;
+}
+
+  .no-wrap-text {
+  white-space: nowrap;
+}
