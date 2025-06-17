@@ -7,7 +7,7 @@ import { BackgroundBeams } from "@/components/ui/backgroundbeams";
 import Link from "next/link";
 export default function LandingPage() {
   return (
-    <div className="bg-[url(/images/bg-image.png)] bg-[center_73%] scroll-smooth overflow-y-scroll no-scrollbar">
+    <div className="bg-[url(/images/bg-image.png)] bg-[center_-550px] scroll-smooth overflow-y-scroll no-scrollbar">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <BackgroundBeams />
       </div>
