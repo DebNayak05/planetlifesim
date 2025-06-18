@@ -41,14 +41,14 @@ export default function LandingPage() {
             <div className="bg-white/0 backdrop-blur-md p-8 rounded-xl border border-white/20 shadow-lg text-white min-w-3/4 max-w-3/4 justify-center text-center">
               <p className="text-2xl p-4">Discover. Customize. Imagine.</p>
               <p className="p-4">
-                Ever wondered what it's like to stand on a distant world? Our
+                Ever wondered what its like to stand on a distant world? Our
                 platform brings the universe closer to you by letting you
                 explore real exoplanets in stunning 3D. Dive deep into their
                 unique terrains, spin them around, and learn fascinating facts
                 about their atmosphere, temperature, gravity, and more.
               </p>
               <Button className="justify-center text-base font-semibold tracking-wide m-2 backdrop-blur-md bg-white/10 border border-white/30 text-white hover:bg-white/20 transition duration-300 ease-in-out rounded-xl shadow-md p-4">
-                <a href="/#about2">But we don't stop here.</a>
+                <Link href="/#about2">But we don&apos;t stop here.</Link>
               </Button>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function LandingPage() {
           <div className="w-full min-h-screen bg-cover bg-center flex items-center justify-center">
             <div className="bg-white/0 backdrop-blur-md p-8 rounded-xl border border-white/20 shadow-lg text-white min-w-3/4 max-w-3/4 justify-center text-center">
               <p className="p-4">
-                What if you could change a planet's environment? What if
+                What if you could change a planet&apos;s environment? What if
                 tweaking its atmosphere, water levels, or sunlight could turn a
                 barren rock into a new Earth?
               </p>
@@ -82,7 +82,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="p-4">
-                Whether you're a space enthusiast, a student, or just curious
+                Whether you&apos;re a space enthusiast, a student, or just curious
                 about the cosmos - this is your chance to play with the building
                 blocks of life on a planetary scale.
               </p>

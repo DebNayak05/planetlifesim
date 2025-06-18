@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-export default function Navbar() {
+import { cn } from "@/lib/utils";
+export default function Navbar({ className }: { className?: string }) {
   const [scrolledEnough, setScrolledEnough] = useState(false);
   const [scrollDirection, setScrollDirection] = useState("up");
   useEffect(() => {
@@ -24,21 +25,24 @@ export default function Navbar() {
   }, []);
   return (
     <nav
-      className={`fixed top-0 w-full z-50 p-4 text-white transition-all duration-500 ${
-        scrolledEnough ? "bg-gray-800/50" : "bg-black"
-      } ${
-        scrollDirection === "down"
-          ? "opacity-0 pointer-events-none"
-          : "opacity-100"
-      }`}
+      className={cn(
+        `fixed top-0 w-full z-50 p-4 text-white transition-all duration-500 ${
+          scrolledEnough ? "bg-gray-800/50" : "bg-black"
+        } ${
+          scrollDirection === "down"
+            ? "opacity-0 pointer-events-none"
+            : "opacity-100"
+        }`,
+        className
+      )}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <span className="text-xl font-bold">ExoCosmos</span>
         <div className="space-x-6">
-          <Link className="hover:underline" href="/checkoutPlanets">
+          <Link className="hover:underline" href="/checkoutplanets">
             Explore Planets
           </Link>
-          <Link href="#about" className="hover:underline">
+          <Link href="/#about" className="hover:underline">
             About ExoCosmos
           </Link>
         </div>
