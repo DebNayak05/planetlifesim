@@ -50,7 +50,7 @@ const SpaceScene: React.FC = () => {
       const glowLayer = getFresnelMat({radius:2.35, rimHex:0xffffdd});
 
       // Sun Layer
-      const sunMesh = getSunLayer({shine:2.2, radius:200});
+      const sunMesh = getSunLayer({shine:0.8, radius:200, color:0xf23e07});
       const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
 
       // Create a group to hold both sphere and additional texture layers 

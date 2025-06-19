@@ -10,9 +10,11 @@ export default function getSunLayer({radius = 10, color = 0xFBE12D, shine= 0.3, 
             emissive:color,
             emissiveIntensity:shine,
             transparent:false,
+            depthWrite:true,
+            depthTest:true,
+            opacity: 1
           })
     const sunMesh = new THREE.Mesh(sunGeo, sunMat);;
-  
-  return sunMesh;
+    return sunMesh; 
     
 }
