@@ -567,92 +567,95 @@ const  getCloudLayer = ({
     currentPreset_ = 'storm',
     percentageCloud = 0.2, 
     cloudColor = new THREE.Color(1.0, 1.0, 1.0), 
-    cloudInnerRadius = 2.75, 
-    cloudOuterRadius= 3.05}:
-    {camera_: THREE.PerspectiveCamera, 
-        currentPreset_?: string, 
-        percentageCloud?: number, 
-        cloudColor?: THREE.Color, 
-        cloudInnerRadius? : number, 
-        cloudOuterRadius?: number}) => {
+    cloudInnerRadiusMultiplier = 1.5, 
+    cloudOuterRadiusMultiplier = 1.8,
+    soilRadius=2
+}:{
+    camera_: THREE.PerspectiveCamera, 
+    currentPreset_?: string, 
+    percentageCloud?: number, 
+    cloudColor?: THREE.Color, 
+    cloudInnerRadiusMultiplier? : number, 
+    cloudOuterRadiusMultiplier?: number,
+    soilRadius?:number
+}) => {
 
-
-        // Use a full-screen quad for ray marching (the shader does all the 3D work)
-        const cloudGeometry = new THREE.PlaneGeometry(2, 2);
-        const cloudMaterial_ = new THREE.ShaderMaterial({
-            uniforms: {
-                // ===============================
-                // TIME & RESOLUTION CONTROLS
-                // ===============================
-                u_time: { value: 0.0 },  // Global time for animations
-                u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }, // Screen resolution for ray generation
-
-                // ===============================
-                // CAMERA PROPERTIES
-                // ===============================
-                u_cameraPos: { value: camera_.position },        // Camera world position
-                u_cameraWorldMatrix: { value: camera_.matrixWorld }, // Camera transformation matrix
-                u_cameraFrustumSize: { value: 1.0 },                  // For LOD calculations
-
-                // ===============================
-                // CLOUD VOLUME GEOMETRY
-                // ===============================
-                u_cloudInnerRadius: { value: cloudInnerRadius }, // Inner edge of cloud layer
-                u_cloudOuterRadius: { value: cloudOuterRadius }, // Outer edge of cloud layer
-
-                // ===============================
-                // CLOUD COVERAGE CONTROLS
-                // ===============================
-                u_cloudCover: { value: 0.65 },                        // Overall cloud coverage (0=clear, 1=overcast)
-                u_percentageCloud: { value: percentageCloud },                    // Weather map threshold (controls cloud sparsity)
-
-                // ===============================
-                // LIGHTING CONFIGURATION
-                // ===============================
-                u_sunColor: { value: new THREE.Color(1.0, 0.9, 0.8).multiplyScalar(1.5) }, // Warm sunlight color
-                u_ambientColor: { value: new THREE.Color(0.01, 0.01, 0.01) },              // Very dark ambient (space)
-                u_sunDirection: { value: new THREE.Vector3(1, 0.5, 0.5).normalize() },     // Sun direction vector
-                u_cloudBaseColor: { value: cloudColor }, // White color
-
-                // ===============================
-                // CLOUD SHAPE PARAMETERS
-                // ===============================
-                u_weatherScale: { value: 0.1 },      // Scale of weather patterns (lower = larger systems)
-                u_weatherStrength: { value: 0.4 },   // How strongly weather affects clouds (0-1)
-                u_cloudClumping: { value: 0.6 },     // Worley noise influence (higher = more separated clouds)
-
-                // ===============================
-                // SEED-BASED PATTERN SYSTEM
-                // ===============================
-                // Current pattern seeds
-                u_noiseSeed1: { value: cloudPresets_[currentPreset_].seed1 }, // Base cloud pattern seed
-                u_noiseSeed2: { value: cloudPresets_[currentPreset_].seed2 }, // Detail pattern seed
-                u_noiseSeed3: { value: cloudPresets_[currentPreset_].seed3 }, // Weather pattern seed
-                
-                // Transition system
-                u_seedTransition: { value: 0.0 },    // Interpolation factor (0=current, 1=target)
-                
-                // Target pattern seeds (for smooth transitions)
-                u_nextSeed1: { value: cloudPresets_[currentPreset_].seed1 },
-                u_nextSeed2: { value: cloudPresets_[currentPreset_].seed2 },
-                u_nextSeed3: { value: cloudPresets_[currentPreset_].seed3 },
-
-                u_cloudRotation: { value: 0.0 },        // Y-axis rotation in radians
-                u_rotationMatrix: { value: new THREE.Matrix3() }, // 3x3 rotation matrix
-            },
-            
-            vertexShader: getVertexShader_(),
-            fragmentShader: getFragmentShader_(),
-            
+    // Use a full-screen quad for ray marching (the shader does all the 3D work)
+    const cloudGeometry = new THREE.PlaneGeometry(2, 2);
+    const cloudMaterial_ = new THREE.ShaderMaterial({
+        uniforms: {
             // ===============================
-            // MATERIAL PROPERTIES
+            // TIME & RESOLUTION CONTROLS
             // ===============================
-            transparent: true,           // Enable transparency for cloud blending
-            opacity: 0.2,               // Base opacity (actual opacity calculated in shader)
-            depthWrite: false,          // Don't write to depth buffer (for proper blending)
-            depthTest: false,           // Don't test depth (full-screen effect)
-            side: THREE.DoubleSide,     // Render both sides of quad
-            blending: THREE.NormalBlending  // Standard alpha blending
+            u_time: { value: 0.0 },  // Global time for animations
+            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }, // Screen resolution for ray generation
+
+            // ===============================
+            // CAMERA PROPERTIES
+            // ===============================
+            u_cameraPos: { value: camera_.position },        // Camera world position
+            u_cameraWorldMatrix: { value: camera_.matrixWorld }, // Camera transformation matrix
+            u_cameraFrustumSize: { value: 1.0 },                  // For LOD calculations
+
+            // ===============================
+            // CLOUD VOLUME GEOMETRY
+            // ===============================
+            u_cloudInnerRadius: { value: soilRadius * cloudInnerRadiusMultiplier }, // Inner edge of cloud layer
+            u_cloudOuterRadius: { value: soilRadius * cloudOuterRadiusMultiplier }, // Outer edge of cloud layer
+
+            // ===============================
+            // CLOUD COVERAGE CONTROLS
+            // ===============================
+            u_cloudCover: { value: 0.65 },                        // Overall cloud coverage (0=clear, 1=overcast)
+            u_percentageCloud: { value: percentageCloud },                    // Weather map threshold (controls cloud sparsity)
+
+            // ===============================
+            // LIGHTING CONFIGURATION
+            // ===============================
+            u_sunColor: { value: new THREE.Color(1.0, 0.9, 0.8).multiplyScalar(1.5) }, // Warm sunlight color
+            u_ambientColor: { value: new THREE.Color(0.01, 0.01, 0.01) },              // Very dark ambient (space)
+            u_sunDirection: { value: new THREE.Vector3(1, 0.5, 0.5).normalize() },     // Sun direction vector
+            u_cloudBaseColor: { value: cloudColor }, // White color
+
+            // ===============================
+            // CLOUD SHAPE PARAMETERS
+            // ===============================
+            u_weatherScale: { value: 0.1 },      // Scale of weather patterns (lower = larger systems)
+            u_weatherStrength: { value: 0.4 },   // How strongly weather affects clouds (0-1)
+            u_cloudClumping: { value: 0.6 },     // Worley noise influence (higher = more separated clouds)
+
+            // ===============================
+            // SEED-BASED PATTERN SYSTEM
+            // ===============================
+            // Current pattern seeds
+            u_noiseSeed1: { value: cloudPresets_[currentPreset_].seed1 }, // Base cloud pattern seed
+            u_noiseSeed2: { value: cloudPresets_[currentPreset_].seed2 }, // Detail pattern seed
+            u_noiseSeed3: { value: cloudPresets_[currentPreset_].seed3 }, // Weather pattern seed
+            
+            // Transition system
+            u_seedTransition: { value: 0.0 },    // Interpolation factor (0=current, 1=target)
+            
+            // Target pattern seeds (for smooth transitions)
+            u_nextSeed1: { value: cloudPresets_[currentPreset_].seed1 },
+            u_nextSeed2: { value: cloudPresets_[currentPreset_].seed2 },
+            u_nextSeed3: { value: cloudPresets_[currentPreset_].seed3 },
+
+            u_cloudRotation: { value: 0.0 },        // Y-axis rotation in radians
+            u_rotationMatrix: { value: new THREE.Matrix3() }, // 3x3 rotation matrix
+        },
+        
+        vertexShader: getVertexShader_(),
+        fragmentShader: getFragmentShader_(),
+        
+        // ===============================
+        // MATERIAL PROPERTIES
+        // ===============================
+        transparent: true,           // Enable transparency for cloud blending
+        opacity: 0.2,               // Base opacity (actual opacity calculated in shader)
+        depthWrite: false,          // Don't write to depth buffer (for proper blending)
+        depthTest: false,           // Don't test depth (full-screen effect)
+        side: THREE.DoubleSide,     // Render both sides of quad
+        blending: THREE.NormalBlending  // Standard alpha blending
         });
 
         const cloudQuad = new THREE.Mesh(cloudGeometry, cloudMaterial_);
