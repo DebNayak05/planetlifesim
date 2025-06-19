@@ -3,7 +3,8 @@ import * as THREE from "three";
 interface FresnelMatOptions {
   rimHex?: number;
   facingHex?: number;
-  radius?: number;
+  fresnelMultiplier?: number;
+  soilRadius?:number;
 }
 
 interface FresnelUniforms {
@@ -18,10 +19,11 @@ interface FresnelUniforms {
 function getFresnelMat({ 
   rimHex = 0x0088ff, 
   facingHex = 0x000000,
-  radius = 2 
+  fresnelMultiplier = 1.17,
+  soilRadius = 2
 }: FresnelMatOptions = {}) {
  
-    const geometry = new THREE.SphereGeometry(radius,128,128);
+    const geometry = new THREE.SphereGeometry(soilRadius*fresnelMultiplier,512,512);
     
   const uniforms: FresnelUniforms = {
     color1: { value: new THREE.Color(rimHex) },

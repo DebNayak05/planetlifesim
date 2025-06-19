@@ -1,7 +1,16 @@
 import * as THREE from 'three'
 
-const getSoilLayer= (index: number = 0,displacementScale: number = 0.8) => {
-    const R=2;
+const getSoilLayer= ({
+index=0,
+displacementScale=0.8,
+soilRadius=2,
+shininess=5,
+}:{
+index?:number
+displacementScale?:number,
+soilRadius?:number
+shininess?:number
+}={}) => {
     let loader = new THREE.TextureLoader();
     
     let dicDiffuse:{[key:number]: string} = {
@@ -40,14 +49,13 @@ const getSoilLayer= (index: number = 0,displacementScale: number = 0.8) => {
       3:"../../textures/soil/Trappist-1e/Trappist-1e_ambien.png"
     };
     
-
     const soilDiffuse = loader.load(dicDiffuse[index]);
     const soilDisplacement = loader.load(dicDisplacement[index]);
     const soilNormal = loader.load(dicNormal[index]);
     const soilSpecular = loader.load(dicSpecular[index]);
     const soilAmbient = loader.load(dicAmbient[index]);
 
-    const soilGeo = new THREE.SphereGeometry(R, 128, 128)
+    const soilGeo = new THREE.SphereGeometry(soilRadius, 512, 512)
     const soilMat = new THREE.MeshPhongMaterial({
         map: soilDiffuse,
         displacementMap: soilDisplacement,
@@ -55,7 +63,7 @@ const getSoilLayer= (index: number = 0,displacementScale: number = 0.8) => {
         normalMap: soilNormal,
         specularMap: soilSpecular,
         aoMap: soilAmbient,
-        shininess: 5,
+        shininess: shininess,
       })
       const soilMesh = new THREE.Mesh(soilGeo, soilMat)
       return soilMesh;
