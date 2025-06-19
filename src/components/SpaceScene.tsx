@@ -7,6 +7,7 @@ import getWaterLayer from './water/WaterField';
 import getCloudLayer from './cloud/CloudField';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import getFresnelMat  from './fresnel/fresnelField';
+import getSunLayer from './sun/sun';
 
 let Gtime = 0;
 let cloudRotation = 0.0;
@@ -48,27 +49,32 @@ const SpaceScene: React.FC = () => {
       //Fresnel Layer
       const glowLayer = getFresnelMat({radius:2.35, rimHex:0xffffdd});
 
-      // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      // scene.add(sphere);
+      // Sun Layer
+      const sunMesh = getSunLayer({shine:2.2, radius:200});
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
 
-      // orbitalControl.dampingFactor = 0.05;
       // Create a group to hold both sphere and additional texture layers 
       // TODO: Add layers
       const planetGroup = new THREE.Group();
-      // planetGroup.add(sphere);
       planetGroup.add(soilMesh);
       planetGroup.add(waterMesh);
       planetGroup.add(cloudQuad);
       planetGroup.add(glowLayer);
       scene.add(planetGroup);
 
+      scene.add(sunMesh);
+      scene.add(directionalLight);
+      
+      // Min - 400 and Max -1100
+      sunMesh.position.set(1100,5,0); //Keep both of them same
+      directionalLight.position.set(1100, 5, 0);
+      
+      
       // Add lighting
-      const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+      const ambientLight = new THREE.AmbientLight(0x202020, 0.2);
       scene.add(ambientLight);
       
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
-      directionalLight.position.set(-1, 1, 1);
-      scene.add(directionalLight);
+
 
       // Position camera
       camera.position.z = 8;
@@ -101,7 +107,8 @@ const SpaceScene: React.FC = () => {
         // Slowly rotate stars for space effect
         stars.rotation.x += 0.0001;
         stars.rotation.y += 0.0002;
-        planetGroup.rotation.y += 0.0009
+        planetGroup.rotation.y += 0.002
+        sunMesh.rotation.y += 0.002
 
         Gtime += 0.01
         camera.updateMatrix();

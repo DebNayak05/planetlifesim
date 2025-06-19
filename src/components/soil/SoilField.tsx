@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { vec2 } from 'three/tsl';
 
 const getSoilLayer= (index: number = 0,displacementScale: number = 0.8) => {
     const R=2;
