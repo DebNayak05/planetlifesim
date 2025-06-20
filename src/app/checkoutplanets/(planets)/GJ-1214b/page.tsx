@@ -9,11 +9,11 @@ export default function Simulator() {
                 enableWater={false}
                 percentageCloud={-2.2}
                 cloudInnerRadiusMultiplier={1.17}
-                cloudOuterRadiusMultiplier={1.25}
+                cloudOuterRadiusMultiplier={1.35}
                 borderColor={0xffffdd}
-                cloudColorR={0.5}
-                cloudColorG={0.5}
-                cloudColorB={0.5}
+                cloudColorR={0.7}
+                cloudColorG={0.7}
+                cloudColorB={0.7}
                 sunEmissionColor={0xff0000}
                 fresnelMultiplier={1}
 
