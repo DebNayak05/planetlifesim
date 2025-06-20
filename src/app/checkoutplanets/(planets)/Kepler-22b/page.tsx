@@ -1,9 +1,8 @@
-import SpaceScene from '../../../components/SpaceScene'
-
+import SpaceScene from '@/components/SpaceScene'
+import AboutPlanetSimulator from '../aboutPlanetSimulator'
 export default function Simulator() {
     return (
         <div>
-            <h1>Kepler-22b</h1>
             <SpaceScene
             soilIndex={2}
             waterIndex={6}
@@ -19,6 +18,7 @@ export default function Simulator() {
             sunDistanceX={1000}
             sunShininess={1}
             />
+            <AboutPlanetSimulator planetName='Kepler-22b'/>
         </div>
     )
 }

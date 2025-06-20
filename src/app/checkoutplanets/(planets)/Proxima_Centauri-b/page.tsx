@@ -1,9 +1,8 @@
-import SpaceScene from '../../../components/SpaceScene'
-
+import SpaceScene from '@/components/SpaceScene'
+import AboutPlanetSimulator from '../aboutPlanetSimulator'
 export default function Simulator() {
     return (
         <div>
-            <h1>Proxima Centauri-b</h1>
             <SpaceScene
             soilIndex={5}
             soilDisplacementScale={0.2}
@@ -19,6 +18,7 @@ export default function Simulator() {
             sunDistanceX={700}
             lightColor={0xB06C55}
             />
+            <AboutPlanetSimulator planetName='Proxima_Centauri-b'/>
         </div>
     )
 }

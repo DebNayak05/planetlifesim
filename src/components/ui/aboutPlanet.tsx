@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import { PlanetInfo, TravelOptions } from "@/app/planets/planetInfo";
+// import { PlanetInfo, TravelOptions } from "@/app/planets/planetInfo";
+import { PlanetInfo, TravelOptions } from "@/app/checkoutplanets/(planets)/planetInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import numeral from "numeral";
 import { useEffect, useState } from "react";

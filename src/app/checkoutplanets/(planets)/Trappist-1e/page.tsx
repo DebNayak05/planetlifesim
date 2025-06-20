@@ -1,9 +1,8 @@
-import SpaceScene from '../../../components/SpaceScene'
-
+import SpaceScene from '@/components/SpaceScene'
+import AboutPlanetSimulator from '../aboutPlanetSimulator'
 export default function Simulator() {
     return (
         <div>
-            <h1>Trappist-1e</h1>
             <SpaceScene
             soilIndex={3}
             soilDisplacementScale={0.5}
@@ -16,6 +15,7 @@ export default function Simulator() {
             sunDistanceX={1000}
             lightColor={0xB06C55}
             />
+            <AboutPlanetSimulator planetName='Trappist-1e'/>
         </div>
     )
 }
