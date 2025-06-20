@@ -7,13 +7,78 @@ import getWaterLayer from './water/WaterField';
 import getCloudLayer from './cloud/CloudField';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import getFresnelMat  from './fresnel/fresnelField';
+import getSunLayer from './sun/sun';
 
 let Gtime = 0;
 let cloudRotation = 0.0;
 
-const SpaceScene: React.FC = () => {
+export default function SpaceScene({
+  soilRadius,
+  soilIndex,
+  soilDisplacementScale,
+  soilShininess,
+  waterIndex,
+  waterColor,
+  waterMultiplier,
+  waterOpacity,
+  waterShininess,
+  waterReflectivity,
+  cloudInnerRadiusMultiplier,
+  cloudOuterRadiusMultiplier,
+  percentageCloud,
+  currentPreset_,
+  cloudColorR=1,
+  cloudColorG=1,
+  cloudColorB=1,
+  borderColor,
+  facingColor,
+  fresnelMultiplier,
+  sunRadius,
+  sunEmissionColor,
+  sunShininess,
+  sunDistanceX=400,
+  lightColor=0xffffff,
+  lightIntensity=2,
+
+  enableSoil=true,
+  enableWater=true,
+  enableCloud = true,
+  enableFresnel = true
+}:{
+  soilRadius?:number,
+  soilIndex?:number,
+  soilDisplacementScale?:number,
+  soilShininess?:number,
+  waterIndex?:number,
+  waterColor?:number,
+  waterMultiplier?:number,
+  waterOpacity?:number,
+  waterShininess?:number,
+  waterReflectivity?:number,
+  cloudInnerRadiusMultiplier?:number,
+  cloudOuterRadiusMultiplier?:number,
+  percentageCloud?:number,
+  currentPreset_?:string,
+  cloudColorR?:number
+  cloudColorG?:number
+  cloudColorB?:number
+  borderColor?:number,
+  facingColor?:number,
+  fresnelMultiplier?:number,
+  sunRadius?:number,
+  sunEmissionColor?:number,
+  sunShininess?:number,
+  sunDistanceX?:number,
+  lightColor?:number,
+  lightIntensity?:number,
+
+  enableSoil?:boolean,
+  enableWater?:boolean,
+  enableCloud?:boolean,
+  enableFresnel?:boolean
+  }={}){
   const containerRef = useRef<HTMLDivElement>(null);
-  
+  const cloudColor = new THREE.Color(cloudColorR, cloudColorG, cloudColorB)
   useEffect(() => {
     if (typeof window !== 'undefined' && containerRef.current) {
       // Scene setup
@@ -33,42 +98,53 @@ const SpaceScene: React.FC = () => {
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
       orbitalControl.maxDistance = 100;
       orbitalControl.minDistance = 5;
-      // orbitalControl.enableDamping = true;
-      // orbitalControl.dampingFactor = 0.05;
 
       // Soil Layer
-      const soilMesh = getSoilLayer();
+      const soilMesh = getSoilLayer({soilRadius:soilRadius, index:soilIndex, displacementScale:soilDisplacementScale, shininess:soilShininess});
 
       //Water Layer
-      const waterMesh = getWaterLayer({index:6});
+      const waterMesh = getWaterLayer({index:waterIndex, soilRadius:soilRadius, newColor:waterColor,waterMultiplier:waterMultiplier,newOpacity:waterOpacity,newShininess:waterShininess,newReflectivity:waterReflectivity});
 
       //Cloud Layer
-      const {cloudMaterial_, cloudQuad} = getCloudLayer({camera_:camera,cloudInnerRadius:3.0,cloudOuterRadius:3.25, percentageCloud:0.35,currentPreset_:"random", cloudColor:new THREE.Color(1,1,1)});
+      const {cloudMaterial_, cloudQuad} = getCloudLayer({camera_:camera,cloudInnerRadiusMultiplier:cloudInnerRadiusMultiplier,cloudOuterRadiusMultiplier:cloudOuterRadiusMultiplier, percentageCloud:percentageCloud,currentPreset_:currentPreset_, cloudColor:cloudColor,soilRadius:soilRadius});
       
       //Fresnel Layer
-      const glowLayer = getFresnelMat({radius:2.35, rimHex:0xffffdd});
+      const glowLayer = getFresnelMat({fresnelMultiplier:fresnelMultiplier, rimHex:borderColor,facingHex:facingColor,soilRadius:soilRadius});
 
-      // const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      // scene.add(sphere);
+      // Sun Layer
+      const sunMesh = getSunLayer({shine:sunShininess, radius:sunRadius, emissionColor:sunEmissionColor, });
+      const directionalLight = new THREE.DirectionalLight(lightColor, lightIntensity);
 
-      // orbitalControl.dampingFactor = 0.05;
       // Create a group to hold both sphere and additional texture layers 
       // TODO: Add layers
       const planetGroup = new THREE.Group();
-      // planetGroup.add(sphere);
-      planetGroup.add(soilMesh);
-      planetGroup.add(waterMesh);
-      planetGroup.add(cloudQuad);
-      planetGroup.add(glowLayer);
+      if(enableSoil){
+        planetGroup.add(soilMesh);
+      }
+      if(enableWater){
+        planetGroup.add(waterMesh);
+      }
+      if(enableCloud) {
+        planetGroup.add(cloudQuad);
+      }
+      if(enableFresnel) {
+        planetGroup.add(glowLayer);
+      }
       scene.add(planetGroup);
 
+      scene.add(sunMesh);
+      scene.add(directionalLight);
+      
+      // Min - 400 and Max -1100
+      sunMesh.position.set(sunDistanceX,5,0); //Keep both of them same
+      directionalLight.position.set(sunDistanceX, 5, 0);
+      
+      
       // Add lighting
-      const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+      const ambientLight = new THREE.AmbientLight(0x202020, 0.2);
       scene.add(ambientLight);
       
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8);
-      directionalLight.position.set(-1, 1, 1);
-      scene.add(directionalLight);
+
 
       // Position camera
       camera.position.z = 8;
@@ -101,7 +177,8 @@ const SpaceScene: React.FC = () => {
         // Slowly rotate stars for space effect
         stars.rotation.x += 0.0001;
         stars.rotation.y += 0.0002;
-        planetGroup.rotation.y += 0.0009
+        planetGroup.rotation.y += 0.002
+        sunMesh.rotation.y += 0.002
 
         Gtime += 0.01
         camera.updateMatrix();
@@ -190,5 +267,3 @@ const SpaceScene: React.FC = () => {
     />
   );
 };
-
-export default SpaceScene;

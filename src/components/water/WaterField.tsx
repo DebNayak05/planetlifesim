@@ -1,7 +1,22 @@
 import * as THREE from 'three';
 
-const getWaterLayer = ({index=0, newColor=0xffffff,multiplier=1.17, newOpacity=0.5, newShininess=1000, newReflectivity=0.4}: {index?: number, newColor?: number,multiplier?: number, newOpacity?: number, newShininess?:number, newReflectivity?:number} = {}) => {
-    const R = 2;
+const getWaterLayer = ({
+    index=0, 
+    newColor=0xffffff,
+    soilRadius=2,
+    waterMultiplier=1.17, 
+    newOpacity=0.5, 
+    newShininess=1000, 
+    newReflectivity=0.4,
+}: {
+    index?: number, 
+    newColor?: number,
+    soilRadius?:number,
+    waterMultiplier?: number, 
+    newOpacity?: number, 
+    newShininess?:number, 
+    newReflectivity?:number
+} = {}) => {
     let loader = new THREE.TextureLoader();
 
     let dic: { [key: number]: string }  = { 
@@ -20,11 +35,8 @@ const getWaterLayer = ({index=0, newColor=0xffffff,multiplier=1.17, newOpacity=0
     };
 
     const waterNormal = loader.load(dic[index]);
-    
-    const temp1 = loader.load("/home/hope/Downloads/water/water1_normal.png");
-    const temp2 = loader.load("/home/hope/Downloads/water/water1_displacement.png");;
 
-    const waterGeo = new THREE.SphereGeometry(R *multiplier, 128, 128)
+    const waterGeo = new THREE.SphereGeometry(soilRadius *waterMultiplier, 512, 512)
     const waterMat = new THREE.MeshPhongMaterial({
         color: newColor,
         transparent: true,
