@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export default function getSunLayer({
     radius = 200, 
-    emissionColor = 0xFBE12D, 
+    emissionColor = 0xFBE12D,  //f23e07 for red dwarf
     shine= 0.9, 
 }:{
     radius?:number,
