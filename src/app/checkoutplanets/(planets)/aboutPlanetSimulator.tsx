@@ -1,5 +1,6 @@
 "use client";
 import planetMap, { PlanetInfo } from "./planetInfo";
+import { FaCirclePlus } from "react-icons/fa6";
 import { dummyPlanetInfo } from "./planetInfo";
 import {
   Dialog,
@@ -16,14 +17,17 @@ export default function AboutPlanetSimulator({
   const planetInfo: PlanetInfo = planetMap.get(planetName) ?? dummyPlanetInfo;
   return (
     <div>
-      <div className="cursor-pointer fixed bottom-6 max-w-3/12 max-h-1/12 left-6 z-50 rounded-2xl border border-white/20 px-7 py-4 text-white shadow-xl hover:scale-105 transition-transform duration-200 justify-center text-center items-center backdrop-blur-2xl">
+      <div className="cursor-pointer fixed bottom-6 left-6 z-50 rounded-2xl border border-white/20 px-7 py-4 text-white shadow-xl hover:scale-105 transition-transform duration-200 justify-center text-center items-center backdrop-blur-2xl">
         <Dialog>
-          <DialogTrigger className="text-2xl font-extrabold cursor-pointer">
-            {planetName.replace("_", " ").toUpperCase()}
+          <DialogTrigger className="text-2xl font-extrabold cursor-pointer flex flex-row justify-center items-center text-center gap-2">
+            <span>
+              {planetName.replace("_", " ").toUpperCase()}
+            </span>
+            <FaCirclePlus className="text-violet-400" size={22}/>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader className="text-3xl font-bold text-center text-gray-900 dark:text-white items-center">
-              {planetName}
+              {planetName.replace("_", " ").toUpperCase()}
             </DialogHeader>
             <AboutPlanet planetInfo={planetInfo} />
           </DialogContent>
