@@ -1,11 +1,10 @@
-import SpaceScene from '../../../components/SpaceScene'
-
+import SpaceScene from '@/components/SpaceScene'
+import AboutPlanetSimulator from '../aboutPlanetSimulator'
 export default function Simulator() {
     return (
         <div>
-            <h1>HD-209458b</h1>
             <SpaceScene
-            soilIndex={7}
+            soilIndex={6}
             soilDisplacementScale={0}
             enableWater={false}
             // enableCloud={false}
@@ -16,11 +15,12 @@ export default function Simulator() {
             cloudColorR={0.5}
             cloudColorG={0.5}
             cloudColorB={0.5}
-            sunEmissionColor={0xff0000}
-            sunDistanceX={850}
-            // lightColor={0xB06C55}
+            sunDistanceX={900}
+            sunEmissionColor={0xFFEA33}
+            // currentPreset_='dense'
             fresnelMultiplier={1}
             />
+            <AboutPlanetSimulator planetName='HD-209458b'/>
         </div>
     )
 }
