@@ -16,7 +16,7 @@ export default function AboutPlanetSimulator({
   const planetInfo: PlanetInfo = planetMap.get(planetName) ?? dummyPlanetInfo;
   return (
     <div>
-      <div className="cursor-pointer fixed bottom-6 max-w-3/12 max-h-1/12 left-6 z-50 rounded-2xl bg-gradient-to-r from-white/5 to-white/15 border border-white/20 px-7 py-4 text-white shadow-xl hover:scale-105 transition-transform duration-200 justify-center text-center items-center backdrop-blur-2xl">
+      <div className="cursor-pointer fixed bottom-6 max-w-3/12 max-h-1/12 left-6 z-50 rounded-2xl border border-white/20 px-7 py-4 text-white shadow-xl hover:scale-105 transition-transform duration-200 justify-center text-center items-center backdrop-blur-2xl">
         <Dialog>
           <DialogTrigger className="text-2xl font-extrabold cursor-pointer">
             {planetName.replace("_", " ").toUpperCase()}
