@@ -1,9 +1,7 @@
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import SpaceScene from "./SpaceScene"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -52,12 +50,12 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
 
 export default function Sim() {
     // Base values and scaling
-    const radiusP = 13; // Earth radii
-    const massP = 189; // Earth masses
-    const massS = 0.85; // Solar masses
-    const distanceFromSun = 0.03585; // AU
-    const scaleDFS = (700/0.03585); // Convert Distance to AU
-    const scaleR = (13/5); // Convert Earth Radius to 1 to 10 scale
+    const radiusP = 14; // Earth radii
+    const massP = 146; // Earth masses
+    const massS = 1.03; // Solar masses
+    const distanceFromSun = 0.0527; // AU
+    const scaleDFS = (700/distanceFromSun); // Convert Distance to AU
+    const scaleR = (radiusP/2); // Convert Earth Radius to 1 to 10 scale
 
     // FIXED: State for sliders (UI display values 1-10 and 400-1100)
     const [planetRadiusSlider, setPlanetRadiusSlider] = useState(2); // 1-10 for UI
@@ -65,19 +63,9 @@ export default function Sim() {
     const [planetMass, setPlanetMass] = useState(massP);
     const [sunMass, setSunMass] = useState(massS);
 
-    function handlePlanetRadiusSlider(value:number[])
-    {
-        setPlanetRadiusSlider(value[0]);
-    }
-
-    function handleSunDistanceSlider(value:number[])
-    {
-        setSunDistanceSlider(value[0]);
-    }
-
     // FIXED: Convert slider values to astronomical units for calculations
-    const actualRadius = planetRadiusSlider * (13/5); // Earth radii (max 13 when slider = 5)
-    const actualDistance = sunDistanceSlider / (700/0.03585); // AU (0.03585 when slider = 700)
+    const actualRadius = planetRadiusSlider * scaleR; // Earth radii (max 13 when slider = 5)
+    const actualDistance = sunDistanceSlider / scaleDFS; // AU (0.03585 when slider = 700)
     const actualPlanetMass = planetMass; // Earth masses
     const actualSunMass = sunMass; // Solar masses
 
