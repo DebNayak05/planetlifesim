@@ -163,3 +163,18 @@
   .no-wrap-text {
   white-space: nowrap;
 }
+
+
+.spin-animation {
+  /* Apply the animation here */
+  animation: rotate-360-once 1s ease-out forwards; /* 1s duration, ease-out timing, holds last keyframe state */
+}
+
+@keyframes rotate-360-once {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg); /* Spins two full turns */
+  }
+}

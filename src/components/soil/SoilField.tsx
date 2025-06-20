@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 const getSoilLayer= ({
-index=0,
+index=1,
 displacementScale=0.8,
 soilRadius=2,
 shininess=5,

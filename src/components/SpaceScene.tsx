@@ -101,6 +101,9 @@ export default function SpaceScene({
       // Create starfield background
       const stars = createStars();
       scene.add(stars);
+            // Position camera
+      camera.position.z = 8;
+      camera.position.x = -12
 
       // Created orbitalControl for planet
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
@@ -154,11 +157,6 @@ export default function SpaceScene({
       // Add lighting
       const ambientLight = new THREE.AmbientLight(0x202020, 0.2);
       scene.add(ambientLight);
-      
-
-
-      // Position camera
-      camera.position.z = 8;
 
       // state variable
       let isKeyPressed = false;
