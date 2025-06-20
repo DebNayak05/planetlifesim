@@ -104,6 +104,9 @@ export default function SpaceScene({
 
       // Created orbitalControl for planet
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
+      orbitalControl.mouseButtons.RIGHT = null;
+  
+      
       orbitalControl.maxDistance = 100;
       orbitalControl.minDistance = 5;
 
