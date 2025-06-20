@@ -7,15 +7,16 @@ export default function Simulator() {
                 soilIndex={5}
                 soilDisplacementScale={0.2}
                 enableWater={false}
-                percentageCloud={0.40}
+                percentageCloud={0.30}
+                cloudInnerRadiusMultiplier={1.17}
                 cloudOuterRadiusMultiplier={1.6}
-                cloudColorR={0.49}
-                cloudColorG={0.2}
-                cloudColorB={0}
+                // cloudColorR={0.49}
+                // cloudColorG={0.2}
+                // cloudColorB={0}
                 borderColor={0xffffdd}
                 fresnelMultiplier={1.07}
                 sunEmissionColor={0xff0000}
-                lightColor={0xB06C55}
+                // lightColor={0xB06C55}
 
                 radiusPlanet={1.03}
                 massPlanet={1.07}

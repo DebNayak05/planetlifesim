@@ -12,7 +12,7 @@ export default function Simulator() {
                 waterShininess={150}
                 waterReflectivity={0.8}
                 cloudOuterRadiusMultiplier={1.6}
-                percentageCloud={0.45}
+                percentageCloud={0.4}
                 borderColor={0xffffdd}
                 sunEmissionColor={0xFFE94B}
                 sunShininess={1}
