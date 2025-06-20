@@ -1,5 +1,4 @@
 import Sim from '@/components/StarHabitability'
-import SpaceScene from '../../components/SpaceScene'
 import * as THREE from 'three'
 
 const c = new THREE.Color(1,1,0)

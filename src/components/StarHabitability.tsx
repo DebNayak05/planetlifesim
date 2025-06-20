@@ -6,6 +6,9 @@ import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AlertTriangle, Info } from "lucide-react"
+
 
 // Animated Number Component
 const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
@@ -48,82 +51,107 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
 };
 
 export default function Sim() {
-  // Base values and scaling
-  const radiusP = 13; // Earth radii
-  const massP = 189; // Earth masses
-  const massS = 0.85; // Solar masses
-  const distanceFromSun = 0.03585; // AU
-  const scaleDFS = (700/0.03585); // Convert Distance to AU
-  const scaleR = (13/5); // Convert Earth Radius to 1 to 10 scale
+    // Base values and scaling
+    const radiusP = 13; // Earth radii
+    const massP = 189; // Earth masses
+    const massS = 0.85; // Solar masses
+    const distanceFromSun = 0.03585; // AU
+    const scaleDFS = (700/0.03585); // Convert Distance to AU
+    const scaleR = (13/5); // Convert Earth Radius to 1 to 10 scale
 
-  // State for sliders (using scaled values for UI)
-  const [sunDistance, setSunDistance] = useState((distanceFromSun * scaleDFS));
-  const [planetRadius, setPlanetRadius] = useState((radiusP / scaleR));
-  const [planetMass, setPlanetMass] = useState(massP);
-  const [sunMass, setSunMass] = useState(massS);
+    // FIXED: State for sliders (UI display values 1-10 and 400-1100)
+    const [planetRadiusSlider, setPlanetRadiusSlider] = useState(2); // 1-10 for UI
+    const [sunDistanceSlider, setSunDistanceSlider] = useState(700); // 400-1100 for UI
+    const [planetMass, setPlanetMass] = useState(massP);
+    const [sunMass, setSunMass] = useState(massS);
 
-  // Convert scaled values back to astronomical units for calculations
-  const actualRadius = planetRadius * scaleR; // Earth radii
-  const actualDistance = sunDistance / scaleDFS; // AU
-  const actualPlanetMass = planetMass; // Earth masses
-  const actualSunMass = sunMass; // Solar masses
+    function handlePlanetRadiusSlider(value:number[])
+    {
+        setPlanetRadiusSlider(value[0]);
+    }
 
-  // Physical constants
-  const EARTH_RADIUS = 6.371e6; // meters
-  const EARTH_MASS = 5.972e24; // kg
-  const SOLAR_MASS = 1.989e30; // kg
-  const AU = 1.496e11; // meters
-  const G = 6.674e-11; // m³/kg/s²
-  const STEFAN_BOLTZMANN = 5.67e-8; // W/m²/K⁴
-  const SOLAR_LUMINOSITY = 3.828e26; // watts
+    function handleSunDistanceSlider(value:number[])
+    {
+        setSunDistanceSlider(value[0]);
+    }
 
-  // Calculate derived parameters
-  const derivedParams = useMemo(() => {
-    // Convert to SI units
-    const radiusMeters = actualRadius * EARTH_RADIUS;
-    const massKg = actualPlanetMass * EARTH_MASS;
-    const sunMassKg = actualSunMass * SOLAR_MASS;
-    const distanceMeters = actualDistance * AU;
+    // FIXED: Convert slider values to astronomical units for calculations
+    const actualRadius = planetRadiusSlider * (13/5); // Earth radii (max 13 when slider = 5)
+    const actualDistance = sunDistanceSlider / (700/0.03585); // AU (0.03585 when slider = 700)
+    const actualPlanetMass = planetMass; // Earth masses
+    const actualSunMass = sunMass; // Solar masses
 
-    // 1. Density (keeping it constant means mass ∝ radius³)
-    const volume = (4/3) * Math.PI * Math.pow(radiusMeters, 3);
-    const density = massKg / volume; // kg/m³
-    const densityEarth = density / 5515; // Earth densities (Earth = 5515 kg/m³)
+    // State for sliders (using scaled values for UI)
+    // const [sunDistance, setSunDistance] = useState((distanceFromSun * scaleDFS));
+    // const [planetRadius, setPlanetRadius] = useState((radiusP / scaleR));
+//   const [planetMass, setPlanetMass] = useState(massP);
+//   const [sunMass, setSunMass] = useState(massS);
 
-    // 2. Escape velocity
-    const escapeVelocity = Math.sqrt(2 * G * massKg / radiusMeters); // m/s
-    const escapeVelocityEarth = escapeVelocity / 11200; // Earth escape velocities
+//   // Convert scaled values back to astronomical units for calculations
+//   const actualRadius = planetRadius * scaleR; // Earth radii
+//   const actualDistance = sunDistance / scaleDFS; // AU
+//   const actualPlanetMass = planetMass; // Earth masses
+//   const actualSunMass = sunMass; // Solar masses
 
-    // 3. Orbital period (Kepler's 3rd law)
-    const orbitalPeriod = 2 * Math.PI * Math.sqrt(Math.pow(distanceMeters, 3) / (G * sunMassKg)); // seconds
-    const orbitalPeriodYears = orbitalPeriod / (365.25 * 24 * 3600); // years
+    // Physical constants
+    const EARTH_RADIUS = 6.371e6; // meters
+    const EARTH_MASS = 5.972e24; // kg
+    const SOLAR_MASS = 1.989e30; // kg
+    const AU = 1.496e11; // meters
+    const G = 6.674e-11; // m³/kg/s²
+    const STEFAN_BOLTZMANN = 5.67e-8; // W/m²/K⁴
+    const SOLAR_LUMINOSITY = 3.828e26; // watts
 
-    // 4. Surface temperature (radiative equilibrium)
-    const luminosity = actualSunMass * SOLAR_LUMINOSITY; // Assuming L ∝ M
-    const albedo = 0.3; // Earth-like albedo
-    const temperature = Math.pow(
-      (luminosity * (1 - albedo)) / (16 * Math.PI * Math.pow(distanceMeters, 2) * STEFAN_BOLTZMANN),
-      0.25
-    ); // Kelvin
-    const temperatureEarth = temperature / 288; // Earth temperatures (288K = 15°C)
+    // Calculate derived parameters
+    const derivedParams = useMemo(() => {
+        // Convert to SI units
+        const radiusMeters = actualRadius * EARTH_RADIUS;
+        const massKg = actualPlanetMass * EARTH_MASS;
+        const sunMassKg = actualSunMass * SOLAR_MASS;
+        const distanceMeters = actualDistance * AU;
 
-    // 5. Atmospheric pressure (simplified relationship with temperature)
-    // Using exponential relationship with temperature difference from Earth
-    const tempDiff = temperature - 288; // K
-    const pressureRatio = Math.exp(-tempDiff / 50); // Simplified model
-    const atmosphericPressure = pressureRatio; // Earth atmospheres
+        // 1. Density (keeping it constant means mass ∝ radius³)
+        const volume = (4/3) * Math.PI * Math.pow(radiusMeters, 3);
+        const density = massKg / volume; // kg/m³
+        const densityEarth = density / 5515; // Earth densities (Earth = 5515 kg/m³)
 
-    return {
-      density: densityEarth,
-      escapeVelocity: escapeVelocityEarth,
-      orbitalPeriod: orbitalPeriodYears,
-      temperature: temperatureEarth,
-      atmosphericPressure: pressureRatio,
-      temperatureK: temperature,
-      radiusEarth: actualRadius,
-      massEarth: actualPlanetMass
-    };
-  }, [actualRadius, actualPlanetMass, actualSunMass, actualDistance]);
+        // 2. Escape velocity
+        const escapeVelocity = Math.sqrt(2 * G * massKg / radiusMeters); // m/s
+        const escapeVelocityEarth = escapeVelocity / 11200; // Earth escape velocities
+
+        // 3. Orbital period (Kepler's 3rd law)
+        const orbitalPeriod = 2 * Math.PI * Math.sqrt(Math.pow(distanceMeters, 3) / (G * sunMassKg)); // seconds
+        const orbitalPeriodYears = orbitalPeriod / (365.25 * 24 * 3600); // years
+
+        // 4. Surface temperature (radiative equilibrium)
+        const luminosity = actualSunMass * SOLAR_LUMINOSITY; // Assuming L ∝ M
+        const albedo = 0.3; // Earth-like albedo
+        const temperature = Math.pow(
+        (luminosity * (1 - albedo)) / (16 * Math.PI * Math.pow(distanceMeters, 2) * STEFAN_BOLTZMANN),
+        0.25
+        ); // Kelvin
+        const temperatureEarth = temperature / 288; // Earth temperatures (288K = 15°C)
+
+        // 5. Atmospheric pressure (simplified relationship with temperature)
+        // Using exponential relationship with temperature difference from Earth
+        const tempDiff = temperature - 288; // K
+        const pressureRatio = Math.exp(-tempDiff / 50); // Simplified model
+        
+        // 6. Surface gravity
+        const surfaceGravity = G * massKg / Math.pow(radiusMeters, 2);
+        const surfaceGravityEarth = surfaceGravity / 9.81;
+
+        return {
+        density: densityEarth,
+        escapeVelocity: escapeVelocityEarth,
+        orbitalPeriod: orbitalPeriodYears,
+        temperature: temperatureEarth,
+        atmosphericPressure: pressureRatio,
+        temperatureK: temperature,
+        radiusEarth: actualRadius,
+        massEarth: actualPlanetMass
+        };
+    }, [actualRadius, actualPlanetMass, actualSunMass, actualDistance]);
 
   // Enhanced ESI calculation (6 parameters)
   const esi = useMemo(() => {
@@ -139,24 +167,39 @@ export default function Sim() {
       pressure: 0.25
     };
 
-    // Calculate ESI components
-    const radiusESI = 1 - Math.abs((radiusEarth - 1) / (radiusEarth + 1));
-    const densityESI = 1 - Math.abs((density - 1) / (density + 1));
-    const escapeESI = 1 - Math.abs((escapeVelocity - 1) / (escapeVelocity + 1));
-    const tempESI = 1 - Math.abs((temperature - 1) / (temperature + 1));
-    const periodESI = 1 - Math.abs((orbitalPeriod - 1) / (orbitalPeriod + 1));
-    const pressureESI = 1 - Math.abs((atmosphericPressure - 1) / (atmosphericPressure + 1));
+    // Calculate ESI components with safety checks
+    const radiusESI = Math.max(0, 1 - Math.abs((radiusEarth - 1) / (radiusEarth + 1)));
+    const densityESI = Math.max(0, 1 - Math.abs((density - 1) / (density + 1)));
+    const escapeESI = Math.max(0, 1 - Math.abs((escapeVelocity - 1) / (escapeVelocity + 1)));
+    const tempESI = Math.max(0, 1 - Math.abs((temperature - 1) / (temperature + 1)));
+    const periodESI = Math.max(0, 1 - Math.abs((orbitalPeriod - 1) / (orbitalPeriod + 1)));
+    const pressureESI = Math.max(0, 1 - Math.abs((atmosphericPressure - 1) / (atmosphericPressure + 1)));
 
     // Weighted geometric mean
-    const combinedESI = Math.pow(
-      Math.pow(radiusESI, weights.radius / 4) *
-      Math.pow(densityESI, weights.density / 4) *
-      Math.pow(escapeESI, weights.escapeVelocity / 4) *
-      Math.pow(tempESI, weights.temperature / 4) *
-      Math.pow(periodESI, weights.orbitalPeriod / 4) *
-      Math.pow(pressureESI, weights.pressure / 4),
-      4
+    const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
+    const normalizedWeights = Object.fromEntries(
+      Object.entries(weights).map(([key, value]) => [key, value / totalWeight])
     );
+
+    const combinedESI = Math.pow(
+      Math.pow(radiusESI, normalizedWeights.radius) *
+      Math.pow(densityESI, normalizedWeights.density) *
+      Math.pow(escapeESI, normalizedWeights.escapeVelocity) *
+      Math.pow(tempESI, normalizedWeights.temperature) *
+      Math.pow(periodESI, normalizedWeights.orbitalPeriod) *
+      Math.pow(pressureESI, normalizedWeights.pressure),
+      1
+    );
+    // // Weighted geometric mean
+    // const combinedESI = Math.pow(
+    //   Math.pow(radiusESI, weights.radius / 4) *
+    //   Math.pow(densityESI, weights.density / 4) *
+    //   Math.pow(escapeESI, weights.escapeVelocity / 4) *
+    //   Math.pow(tempESI, weights.temperature / 4) *
+    //   Math.pow(periodESI, weights.orbitalPeriod / 4) *
+    //   Math.pow(pressureESI, weights.pressure / 4),
+    //   4
+    // );
 
     return Math.max(0, Math.min(1, combinedESI));
   }, [derivedParams]);
@@ -172,11 +215,11 @@ export default function Sim() {
   const habitabilityClass = getHabitabilityClass(esi);
 
   const handlePlanetRadius = (value: number[]) => {
-    setPlanetRadius(value[0]);
+    setPlanetRadiusSlider(value[0]);
   };
 
   const handleSunDistance = (value: number[]) => {
-    setSunDistance(value[0]);
+    setSunDistanceSlider(value[0]);
   };
 
   const handleSunMass = (value: number[]) => {
@@ -188,17 +231,12 @@ export default function Sim() {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <TooltipProvider>
+        <div className="relative w-full h-screen overflow-hidden bg-black">
       {/* 3D Scene */}
       <SpaceScene
-        soilRadius={actualRadius}
-        sunDistanceX={sunDistance}
-        lightIntensity={2}
-        sunRadius={actualSunMass * 20}
-        enableSoil={true}
-        enableWater={true}
-        enableCloud={true}
-        enableFresnel={true}
+        soilRadius={planetRadiusSlider}
+        sunDistanceX={sunDistanceSlider}
       />
       
       {/* Controls Panel - Left Side */}
@@ -209,7 +247,30 @@ export default function Sim() {
           {/* Planet Radius */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-300">Planet Radius</label>
+                <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-300">Planet Radius</label>
+                <Tooltip>
+                    <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent>
+                            <p>R⊕ = Earth Radii. Affects gravity, density, and atmospheric retention.</p>
+                        </TooltipContent>
+                    </TooltipTrigger>
+                </Tooltip>
+
+                {/* Warning icon for extreme values */}
+                {(planetRadiusSlider <= 1 || planetRadiusSlider >= 10) && (
+                <Tooltip>
+                    <TooltipTrigger>
+                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                    <p>Cannot render the 3D model accurately at extreme values</p>
+                    </TooltipContent>
+                </Tooltip>
+                )}
+                </div>
+                
               <AnimatedNumber 
                 value={actualRadius} 
                 decimals={2} 
@@ -218,10 +279,10 @@ export default function Sim() {
               />
             </div>
             <Slider
-              value={[planetRadius]}
+              value={[planetRadiusSlider]}
               onValueChange={handlePlanetRadius}
               max={10}
-              min={0.1}
+              min={0.01}
               step={0.1}
               className="w-full"
             />
@@ -230,7 +291,17 @@ export default function Sim() {
           {/* Planet Mass */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-300">Planet Mass</label>
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-300">Planet Mass</label>
+                    <Tooltip>
+                    <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent>
+                            <p>M⊕ = Earth Masses. Determines escape velocity and atmospheric retention.</p>
+                        </TooltipContent>
+                    </TooltipTrigger>
+                </Tooltip>
+                </div>
               <AnimatedNumber 
                 value={actualPlanetMass} 
                 decimals={1} 
@@ -242,7 +313,7 @@ export default function Sim() {
               value={[planetMass]}
               onValueChange={handlePlanetMass}
               max={500}
-              min={0.1}
+              min={0.01}
               step={0.1}
               className="w-full"
             />
@@ -251,7 +322,17 @@ export default function Sim() {
           {/* Sun Mass */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-300">Star Mass</label>
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-300">Star Mass</label>
+                    <Tooltip>
+                    <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent>
+                            <p>M☉ = Solar Masses. Affects luminosity and orbital dynamics.</p>
+                        </TooltipContent>
+                    </TooltipTrigger>
+                </Tooltip>
+                </div>
               <AnimatedNumber 
                 value={actualSunMass} 
                 decimals={2} 
@@ -263,7 +344,7 @@ export default function Sim() {
               value={[sunMass]}
               onValueChange={handleSunMass}
               max={2}
-              min={0.1}
+              min={0.01}
               step={0.01}
               className="w-full"
             />
@@ -272,7 +353,30 @@ export default function Sim() {
           {/* Distance from Sun */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-300">Distance from Star</label>
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-300">Distance from Star</label>
+                    <Tooltip>
+                    <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent>
+                            <p>Orbital distance from star. Determines temperature and habitability zone.</p>
+                        </TooltipContent>
+                    </TooltipTrigger>
+                </Tooltip>
+
+                {/* Warning icon for extreme values */}
+                {(sunDistanceSlider <= 400 || sunDistanceSlider >= 1100) && (
+                <Tooltip>
+                    <TooltipTrigger>
+                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                    <p>Cannot render the 3D model accurately at extreme values</p>
+                    </TooltipContent>
+                </Tooltip>
+                )}
+
+                </div>
               <AnimatedNumber 
                 value={actualDistance} 
                 decimals={3} 
@@ -281,9 +385,9 @@ export default function Sim() {
               />
             </div>
             <Slider
-              value={[sunDistance]}
+              value={[sunDistanceSlider]}
               onValueChange={handleSunDistance}
-              max={1000}
+              max={10000}
               min={50}
               step={1}
               className="w-full"
@@ -408,5 +512,6 @@ export default function Sim() {
         </Card>
       </div>
     </div>
+    </TooltipProvider>
   );
 }
