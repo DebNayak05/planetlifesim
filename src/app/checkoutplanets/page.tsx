@@ -6,7 +6,7 @@ export default function CheckoutPlanets() {
   return (
     <div>
       <Navbar />
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto pt-5">
         <HoverEffect items={planets} />
       </div>
       <Footer />
@@ -19,7 +19,8 @@ export const planets = [
     description:
       "An ocean-covered super-Earth in the habitable zone, Kepler-22b was the first confirmed exoplanet in this zone, sparking interest in life-supporting worlds beyond our solar system.",
     imageUrl: "/images/Kepler22b.jpg",
-    link: "/checkoutplanets/kepler22b",
+    // link: "/checkoutplanets/kepler22b",
+    link : "/planets/Kepler-22b"
   },
   {
     title: "Proxima Centauri B",
@@ -33,7 +34,8 @@ export const planets = [
     description:
       "One of seven Earth-sized planets in the TRAPPIST-1 system, TRAPPIST-1e is especially promising for potential habitability, with a rocky surface and possible atmosphere.",
     imageUrl: "/images/Trappist-1e.jpeg",
-    link: "/checkoutplanets/trappist1e",
+    // link: "/checkoutplanets/trappist1e",
+    link : "/planets/Trappist-1e"
   },
   {
     title: "HD 209458 b (Osiris)",
@@ -47,7 +49,8 @@ export const planets = [
     description:
       "The first confirmed exoplanet orbiting a Sun-like star, 51 Pegasi b is a gas giant that challenged traditional planet formation theories due to its close-in orbit.",
     imageUrl: "/images/pegasiB.png",
-    link: "/checkoutplanets/dimidium",
+    // link: "/checkoutplanets/dimidium",
+    link : "/planets/Dimidium"
   },
   {
     title: "Kepler-452b",

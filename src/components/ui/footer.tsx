@@ -13,7 +13,7 @@ const Footer = () => {
     },
     {
       title: "Explore ExoCosmos",
-      href: "/checkoutPlanets",
+      href: "/checkoutplanets",
     },
     {
       title: "Terms of Service",

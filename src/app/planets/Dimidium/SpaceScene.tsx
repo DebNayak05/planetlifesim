@@ -96,7 +96,6 @@ const SpaceScene: React.FC = () => {
       
       // Animation loop
       let animationId: number;
-      
       const animate = () => { //TODO Add layers rotation
         // Slowly rotate stars for space effect
         stars.rotation.x += 0.0001;
