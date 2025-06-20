@@ -13,7 +13,7 @@ export default function CheckoutPlanets() {
     </div>
   );
 }
-export const planets = [
+const planets = [
   {
     title: "Kepler-22b",
     description:
@@ -60,7 +60,7 @@ export const planets = [
     title: "GJ 1214b",
     description:
       "Known as a “mini-Neptune,” this exoplanet likely has a thick, steamy atmosphere and could be water-rich beneath—a laboratory for studying non-Earth-like planetary conditions.",
-    imageUrl: "/images/gj1214b.jpg",
+    imageUrl: "/images/gj1214b.jpeg",
     link: "/checkoutplanets/GJ-1214b",
   },
 ];

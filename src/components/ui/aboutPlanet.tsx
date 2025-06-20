@@ -64,7 +64,7 @@ export default function AboutPlanet({
     return str;
   };
   const updateSpeedAndTime = (travelOption: string, speed: number) => {
-    var speedString = numeral(speed).format("0.[00] a");
+    let speedString = numeral(speed).format("0.[00] a");
     speedString = getFormat(speedString);
     setSelected(travelOption);
     setSpeed(speedString);
@@ -73,7 +73,7 @@ export default function AboutPlanet({
     const distanceInKm = distance * lightYearInKm;
     const timeInHours = distanceInKm / speed;
     const timeInYears = Math.floor(timeInHours / (24 * 365.25));
-    var timeString = numeral(timeInYears).format("0.[00] a");
+    let timeString = numeral(timeInYears).format("0.[00] a");
     timeString = getFormat(timeString);
     setTime(timeString);
   };

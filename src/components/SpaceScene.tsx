@@ -101,6 +101,9 @@ export default function SpaceScene({
       // Create starfield background
       const stars = createStars();
       scene.add(stars);
+            // Position camera
+      camera.position.z = 8;
+      camera.position.x = -12
 
       // Created orbitalControl for planet
       const orbitalControl = new OrbitControls(camera, renderer.domElement);
@@ -154,28 +157,6 @@ export default function SpaceScene({
       // Add lighting
       const ambientLight = new THREE.AmbientLight(0x202020, 0.2);
       scene.add(ambientLight);
-      
-
-
-      // Position camera
-      camera.position.z = 8;
-
-      // state variable
-      let isKeyPressed = false;
-      let isWobbling = false;
-
-      const onKeyDown = (event:KeyboardEvent) => { // first key is toggled then checked which key
-        if (!isKeyPressed) {
-          isKeyPressed = true;
-        }
-      }
-
-      const onKeyUp = (event:KeyboardEvent) => { // add key lift instruction/condition first then this 
-        if(isKeyPressed)
-        {
-          isKeyPressed = false;
-        }
-      }
 
       //Refrences
       sceneRef.current = scene;
@@ -196,10 +177,6 @@ export default function SpaceScene({
     // Store references to materials that need updating
     cloudMaterial_.name = 'cloudMaterial';
 
-      // Add event listeners
-      window.addEventListener('keydown',onKeyDown)
-      window.addEventListener('keyup',onKeyUp)
-      
       // Animation loop
       let animationId: number;
       
@@ -267,8 +244,6 @@ export default function SpaceScene({
         }
 
         // Remove all event listeners
-        window.removeEventListener('keydown', onKeyDown);
-        window.removeEventListener('keyup', onKeyUp);
         window.removeEventListener('resize', handleResize);
 
         // Dispose of orbital controls
@@ -402,7 +377,7 @@ export default function SpaceScene({
 
 
   if (cloudMaterialRef.current?.uniforms) {
-    let radiusChangedTo = Math.max(Math.min((soilRadius),10),2);
+    const radiusChangedTo = Math.max(Math.min((soilRadius),10),2);
     const cloudInnerRadius =  radiusChangedTo * cloudInnerRadiusMultiplier; // Use your multipliers
     const cloudOuterRadius = cloudInnerRadius + ( cloudOuterRadiusMultiplier - cloudInnerRadiusMultiplier);
     // console.log("innerradius: " + cloudInnerRadius.toString());

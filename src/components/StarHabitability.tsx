@@ -5,7 +5,8 @@ import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { AlertTriangle, Info } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { RotateCcw,AlertTriangle, Info } from "lucide-react"
 
 
 // Animated Number Component
@@ -132,6 +133,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
     const [sunDistanceSlider, setSunDistanceSlider] = useState(700); // 400-1100 for UI
     const [planetMass, setPlanetMass] = useState(massP);
     const [sunMass, setSunMass] = useState(massS);
+    const [spinning, setSpinning] = useState(false);
 
     // FIXED: Convert slider values to astronomical units for calculations
     const actualRadius = planetRadiusSlider * scaleR; // Earth radii (max 13 when slider = 5)
@@ -184,8 +186,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
         const pressureRatio = Math.exp(-tempDiff / 50); // Simplified model
         
         // 6. Surface gravity
-        const surfaceGravity = G * massKg / Math.pow(radiusMeters, 2);
-        const surfaceGravityEarth = surfaceGravity / 9.81;
+        // const surfaceGravity = G * massKg / Math.pow(radiusMeters, 2);
 
         return {
         density: densityEarth,
@@ -266,6 +267,22 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
     setPlanetMass(value[0]);
   };
 
+  const defaultMassPlanet = radiusPlanet;
+  const defaultMassSun = massSun;
+
+
+  const handleClick = () => {
+  if (spinning) {
+    return; // Prevent multiple rapid clicks from messing up the animation
+  }
+  setPlanetMass(defaultMassPlanet);
+  setSunMass(defaultMassSun);
+  setPlanetRadiusSlider(2)
+  setSunDistanceSlider(700);
+  setSpinning(true);
+ setTimeout(() => setSpinning(false), 1000);
+};
+
   return (
     <TooltipProvider>
         <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -304,7 +321,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
       />
       
       {/* Controls Panel - Left Side */}
-      <div className="absolute top-4 left-4 w-80 bg-black/20 backdrop-blur-md rounded-xl border border-white/10 p-6">
+      <div className="absolute top-4 left-4 w-80 bg-black/20 backdrop-blur-md rounded-xl border border-white/10 p-6 ring-1 ring-white/50 shadow-[0_0_10px_rgba(255,255,255,0.6)]">
         <h2 className="text-xl font-bold text-white mb-6">Planet Controls</h2>
         
         <div className="space-y-6">
@@ -459,10 +476,16 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
           </div>
         </div>
       </div>
+      <div className="cursor-pointer fixed top-[41.5%] left-[1.12%] z-50 rounded-2xl hover:scale-105 transition-transform duration-200 justify-center text-center items-center backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+      <Button className="bg-black/20 backdrop-blur-md border border-white/10 text-white hover:text-black hover:bg-white/80 transition-colors duration-200" onClick={handleClick}>
+        <RotateCcw size={16} className={`mr-2 ${spinning ? 'spin-animation' : ''}`}/>
+        Reset
+      </Button>
+      </div>
 
       {/* Habitability Card - Right Side */}
       <div className="absolute top-4 right-4 w-96">
-        <Card className="bg-black/20 backdrop-blur-md border border-white/10 text-white">
+        <Card className="bg-black/20 backdrop-blur-md border border-white/10 text-white ring-1 ring-white/50 shadow-[0_0_10px_rgba(255,255,255,0.6)]">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold">Habitability Assessment</CardTitle>
             <div className="flex justify-center">
@@ -512,7 +535,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Mass per unit volume (g/cm³). Increases with mass, decreases with radius cubed. Earth's density: 5.5 g/cm³. Higher density = rockier composition, better atmospheric retention.
+                          Mass per unit volume (g/cm³). Increases with mass, decreases with radius cubed. Earth&apos;s density: 5.5 g/cm³. Higher density = rockier composition, better atmospheric retention.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>
@@ -530,7 +553,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Minimum speed to escape planet's gravity (km/s). Formula: √(2GM/R). Increases with mass, decreases with radius. Earth's: 11.2 km/s. Higher values retain atmospheres better.
+                          Minimum speed to escape planet&apos;s gravity (km/s). Formula: √(2GM/R). Increases with mass, decreases with radius.Earth&apos;s: 11.2 km/s. Higher values retain atmospheres better.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>
@@ -548,7 +571,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Time to complete one orbit around the star. Increases with orbital distance cubed (Kepler's 3rd Law). Affects seasonal patterns and climate stability.
+                          Time to complete one orbit around the star. Increases with orbital distance cubed (Kepler&apos;s 3rd Law). Affects seasonal patterns and climate stability.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>

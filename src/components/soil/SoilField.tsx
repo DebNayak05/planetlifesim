@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 const getSoilLayer= ({
-index=0,
+index=1,
 displacementScale=0.8,
 soilRadius=2,
 shininess=5,
@@ -11,9 +11,9 @@ displacementScale?:number,
 soilRadius?:number
 shininess?:number
 }={}) => {
-    let loader = new THREE.TextureLoader();
+    const loader = new THREE.TextureLoader();
     
-    let dicDiffuse:{[key:number]: string} = {
+    const dicDiffuse:{[key:number]: string} = {
       0:"../../textures/soil/Alpine/Alpine.png",
       1:"../../textures/soil/Dimidium/Dimidium.png",
       2:"../../textures/soil/Kepler-22b/Kepler-22b.png",
@@ -25,7 +25,7 @@ shininess?:number
     };
 
 
-    let dicDisplacement:{[key:number]: string} = {
+    const dicDisplacement:{[key:number]: string} = {
       0:"../../textures/soil/Alpine/Alpine_displacement.png",
       1:"../../textures/soil/Dimidium/Dimidium_displacement.png",
       2:"../../textures/soil/Kepler-22b/Kepler-22b_displacement.png",
@@ -36,7 +36,7 @@ shininess?:number
       7:"../../textures/soil/GJ-1214b/GJ-1214b_displacement.png"
     };
 
-    let dicNormal:{[key:number]:string} = {
+    const dicNormal:{[key:number]:string} = {
       0:"../../textures/soil/Alpine/Alpine_normal.png",
       1:"../../textures/soil/Dimidium/Dimidium_normal.png",
       2:"../../textures/soil/Kepler-22b/Kepler-22b_normal.png",
@@ -47,7 +47,7 @@ shininess?:number
       7:"../../textures/soil/GJ-1214b/GJ-1214b_normal.png"
     };
 
-    let dicSpecular:{[key:number]:string} = {
+    const dicSpecular:{[key:number]:string} = {
       0:"../../textures/soil/Alpine/Alpine_specular.png",
       1:"../../textures/soil/Dimidium/Dimidium_specular.png",
       2:"../../textures/soil/Kepler-22b/Kepler-22b_specular.png",
@@ -58,7 +58,7 @@ shininess?:number
       7:"../../textures/soil/GJ-1214b/GJ-1214b_specular.png"
     };
 
-    let dicAmbient:{[key:number]:string} = {
+    const dicAmbient:{[key:number]:string} = {
       0:"../../textures/soil/Alpine/Alpine_ambient.png",
       1:"../../textures/soil/Dimidium/Dimidium_ambient.png",
       2:"../../textures/soil/Kepler-22b/Kepler-22b_ambient.png",
