@@ -8,7 +8,7 @@ export default function Simulator() {
                 soilDisplacementScale={0.2}
                 enableWater={false}
                 percentageCloud={0.30}
-                cloudInnerRadiusMultiplier={1.17}
+                cloudInnerRadiusMultiplier={1.4}
                 cloudOuterRadiusMultiplier={1.6}
                 // cloudColorR={0.49}
                 // cloudColorG={0.2}
