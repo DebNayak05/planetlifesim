@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AboutPlanet from "@/components/ui/aboutPlanet";
-import { Button } from "@/components/ui/button";
 import Link  from "next/link";
 
 export default function AboutPlanetSimulator({

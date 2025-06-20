@@ -13,7 +13,7 @@ interface FresnelUniforms {
   fresnelBias: { value: number };
   fresnelScale: { value: number };
   fresnelPower: { value: number };
-  [key: string]: { value: any }; // Add this index signature
+  [key: string]: { value: unknown }; // Add this index signature
 }
 
 function getFresnelMat({ 

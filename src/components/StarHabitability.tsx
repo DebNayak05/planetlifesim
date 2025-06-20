@@ -186,8 +186,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
         const pressureRatio = Math.exp(-tempDiff / 50); // Simplified model
         
         // 6. Surface gravity
-        const surfaceGravity = G * massKg / Math.pow(radiusMeters, 2);
-        const surfaceGravityEarth = surfaceGravity / 9.81;
+        // const surfaceGravity = G * massKg / Math.pow(radiusMeters, 2);
 
         return {
         density: densityEarth,
@@ -536,7 +535,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Mass per unit volume (g/cm³). Increases with mass, decreases with radius cubed. Earth's density: 5.5 g/cm³. Higher density = rockier composition, better atmospheric retention.
+                          Mass per unit volume (g/cm³). Increases with mass, decreases with radius cubed. Earth&apos;s density: 5.5 g/cm³. Higher density = rockier composition, better atmospheric retention.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>
@@ -554,7 +553,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Minimum speed to escape planet's gravity (km/s). Formula: √(2GM/R). Increases with mass, decreases with radius. Earth's: 11.2 km/s. Higher values retain atmospheres better.
+                          Minimum speed to escape planet&apos;s gravity (km/s). Formula: √(2GM/R). Increases with mass, decreases with radius.Earth&apos;s: 11.2 km/s. Higher values retain atmospheres better.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>
@@ -572,7 +571,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                       <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
                         <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
-                          Time to complete one orbit around the star. Increases with orbital distance cubed (Kepler's 3rd Law). Affects seasonal patterns and climate stability.
+                          Time to complete one orbit around the star. Increases with orbital distance cubed (Kepler&apos;s 3rd Law). Affects seasonal patterns and climate stability.
                         </TooltipContent>
                       </TooltipTrigger>
                     </Tooltip>

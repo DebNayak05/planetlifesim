@@ -17,9 +17,9 @@ const getWaterLayer = ({
     newShininess?:number, 
     newReflectivity?:number
 } = {}) => {
-    let loader = new THREE.TextureLoader();
+    const loader = new THREE.TextureLoader();
 
-    let dic: { [key: number]: string }  = { 
+    const dic: { [key: number]: string }  = { 
         0:"../../textures/water/normal/water1.jpg",
         1:"../../textures/water/normal/water2.jpg",
         2:"../../textures/water/normal/water3.jpg",

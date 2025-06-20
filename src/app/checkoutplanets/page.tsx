@@ -13,7 +13,7 @@ export default function CheckoutPlanets() {
     </div>
   );
 }
-export const planets = [
+const planets = [
   {
     title: "Kepler-22b",
     description:

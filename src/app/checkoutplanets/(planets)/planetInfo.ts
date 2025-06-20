@@ -17,7 +17,7 @@ export interface PlanetInfo {
   distance : number;
   description: string;
   story: string;
-  challenges: String[];
+  challenges: string[];
 }
 export interface TravelOption {
   label : string,
