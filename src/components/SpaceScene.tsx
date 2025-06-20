@@ -13,7 +13,7 @@ let Gtime = 0;
 let cloudRotation = 0.0;
 
 export default function SpaceScene({
-  soilRadius,
+  soilRadius=2,
   soilIndex,
   soilDisplacementScale,
   soilShininess,
@@ -23,8 +23,8 @@ export default function SpaceScene({
   waterOpacity,
   waterShininess,
   waterReflectivity,
-  cloudInnerRadiusMultiplier,
-  cloudOuterRadiusMultiplier,
+  cloudInnerRadiusMultiplier=1.5,
+  cloudOuterRadiusMultiplier=1.8,
   percentageCloud,
   currentPreset_,
   cloudColorR=1,
@@ -79,6 +79,14 @@ export default function SpaceScene({
   }={}){
   const containerRef = useRef<HTMLDivElement>(null);
   const cloudColor = new THREE.Color(cloudColorR, cloudColorG, cloudColorB)
+
+  const sceneRef = useRef<THREE.Scene>(null);
+  const sunMeshRef = useRef<THREE.Mesh>(null);
+  const directionalLightRef = useRef<THREE.DirectionalLight>(null);
+  const cloudMaterialRef = useRef<THREE.ShaderMaterial>(null);
+  const orbitalControlRef = useRef<OrbitControls>(null);
+  const cameraRef = useRef<THREE.Camera>(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined' && containerRef.current) {
       // Scene setup
@@ -166,6 +174,25 @@ export default function SpaceScene({
         }
       }
 
+      //Refrences
+      sceneRef.current = scene;
+      sunMeshRef.current = sunMesh;
+      directionalLightRef.current = directionalLight;
+      cloudMaterialRef.current = cloudMaterial_;
+      orbitalControlRef.current = orbitalControl;
+      cameraRef.current = camera
+
+      // Added Names
+    soilMesh.name = 'soilMesh';
+    waterMesh.name = 'waterMesh';
+    cloudQuad.name = 'cloudQuad';
+    glowLayer.name = 'glowLayer';
+    sunMesh.name = 'sunMesh';
+    planetGroup.name = 'planetGroup';
+
+    // Store references to materials that need updating
+    cloudMaterial_.name = 'cloudMaterial';
+
       // Add event listeners
       window.addEventListener('keydown',onKeyDown)
       window.addEventListener('keyup',onKeyUp)
@@ -229,31 +256,181 @@ export default function SpaceScene({
 
       window.addEventListener('resize', handleResize);
 
-      // Cleanup function
+      // Proper cleanup function
       return () => {
-        // Remove event listeners
-        window.removeEventListener('keyup', onKeyUp);
+        // Cancel animation frame first
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+
+        // Remove all event listeners
         window.removeEventListener('keydown', onKeyDown);
+        window.removeEventListener('keyup', onKeyUp);
         window.removeEventListener('resize', handleResize);
-        
-        // Cancel animation
-        cancelAnimationFrame(animationId);
-        
-        // Clean up Three.js resources
-        // sphereGeometry.dispose();
-        // sphereMaterial.dispose();
-        stars.geometry.dispose();
-        (stars.material as THREE.Material).dispose();
+
+        // Dispose of orbital controls
+        if (orbitalControl) {
+          orbitalControl.dispose();
+        }
+
+        // Traverse scene and dispose all geometries and materials
+        scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            // Dispose geometry
+            if (object.geometry) {
+              object.geometry.dispose();
+            }
             
-        renderer.dispose();
+            // Dispose materials (handle both single and array)
+            if (object.material) {
+              if (Array.isArray(object.material)) {
+                object.material.forEach(material => material.dispose());
+              } else {
+                object.material.dispose();
+              }
+            }
+          }
+        });
+
+        // Dispose specific objects from your scene
+        if (stars) {
+          if (stars.geometry) stars.geometry.dispose();
+          if (stars.material) {
+            if (Array.isArray(stars.material)) {
+              stars.material.forEach(material => material.dispose());
+            } else {
+              stars.material.dispose();
+            }
+          }
+        }
+
+        // Dispose cloud material specifically
+        if (cloudMaterial_) {
+          cloudMaterial_.dispose();
+        }
+
+        // Dispose cloud quad if it exists
+        if (cloudQuad) {
+          if (cloudQuad.geometry) cloudQuad.geometry.dispose();
+          if (cloudQuad.material) {
+            if (Array.isArray(cloudQuad.material)) {
+              cloudQuad.material.forEach(material => material.dispose());
+            } else {
+              cloudQuad.material.dispose();
+            }
+          }
+        }
+
+        // Dispose planet group objects
+        if (soilMesh) {
+          if (soilMesh.geometry) soilMesh.geometry.dispose();
+          if (soilMesh.material) soilMesh.material.dispose();
+        }
         
-        // Remove canvas from DOM
-        if (containerRef.current && renderer.domElement) {
+        if (waterMesh) {
+          if (waterMesh.geometry) waterMesh.geometry.dispose();
+          if (waterMesh.material) waterMesh.material.dispose();
+        }
+        
+        if (glowLayer) {
+          if (glowLayer.geometry) glowLayer.geometry.dispose();
+          if (glowLayer.material) glowLayer.material.dispose();
+        }
+
+        if (sunMesh) {
+          if (sunMesh.geometry) sunMesh.geometry.dispose();
+          if (sunMesh.material) sunMesh.material.dispose();
+        }
+
+        // Dispose renderer and clear WebGL context
+        if (renderer) {
+          renderer.dispose();
+          renderer.forceContextLoss();
+          if (containerRef.current && renderer?.domElement && containerRef.current.contains(renderer.domElement)) {
+            containerRef.current.removeChild(renderer.domElement);
+          }
+        }
+
+        // Remove canvas from DOM safely
+        if (containerRef.current && renderer?.domElement && containerRef.current.contains(renderer.domElement)) {
           containerRef.current.removeChild(renderer.domElement);
         }
+
+        // Clear scene completely
+        while (scene.children.length > 0) {
+          scene.remove(scene.children[0]);
+        }
+
+        // Clear any remaining references
+        scene.clear();
       };
+
     }
   }, []);
+
+  useEffect(() => {
+    if (!sceneRef.current) return;
+
+    // Update planet group scale based on soilRadius
+    const planetGroup = sceneRef.current.getObjectByName('planetGroup') as THREE.Group;
+    if (planetGroup) {
+      const scale = soilRadius / 2; // 2 is your base radius
+      planetGroup.scale.setScalar(scale);
+    }
+
+    if(orbitalControlRef.current)
+    {
+      orbitalControlRef.current.minDistance = soilRadius*(5/2);
+    }
+
+    // Update sun position and light position
+    if (sunMeshRef.current && directionalLightRef.current) {
+      sunMeshRef.current.position.setX(sunDistanceX);
+      directionalLightRef.current.position.setX(sunDistanceX);
+      directionalLightRef.current.intensity = lightIntensity;
+    }
+
+    // Update cloud coverage
+    if (cloudMaterialRef.current?.uniforms) {
+      cloudMaterialRef.current.uniforms.u_cloudCover.value = percentageCloud;
+    }
+
+  //     if (cloudMaterialRef.current?.uniforms && cameraRef.current) {
+  //   const cloudInnerRadius = soilRadius * cloudInnerRadiusMultiplier; // Use your multipliers
+  //   const cloudOuterRadius = cloudInnerRadius + (cloudOuterRadiusMultiplier - cloudInnerRadiusMultiplier);
+    
+  //   // Update the uniform values directly
+  //   cloudMaterialRef.current.uniforms.u_cloudInnerRadius.value = cloudInnerRadius;
+  //   cloudMaterialRef.current.uniforms.u_cloudOuterRadius.value = cloudOuterRadius;
+
+  //   cloudMaterialRef.current.uniforms.u_cameraPos.value.copy(cameraRef.current.position);
+    
+  //   // Update frustum size for LOD
+  //   const cameraDistance = cameraRef.current.position.length();
+  //   const frustumHeight = 2.0 * Math.tan((75 * Math.PI / 180) / 2.0) * cameraDistance;
+  //   cloudMaterialRef.current.uniforms.u_cameraFrustumSize.value = frustumHeight;
+  // }
+
+  if (cloudMaterialRef.current?.uniforms) {
+    const cloudInnerRadius = soilRadius * cloudInnerRadiusMultiplier;
+    const cloudOuterRadius = soilRadius * cloudOuterRadiusMultiplier;
+    
+    // Update cloud volume bounds
+    cloudMaterialRef.current.uniforms.u_cloudInnerRadius.value = cloudInnerRadius;
+    cloudMaterialRef.current.uniforms.u_cloudOuterRadius.value = cloudOuterRadius;
+    
+    // Update coverage
+    cloudMaterialRef.current.uniforms.u_cloudCover.value = percentageCloud;
+    
+    // Force LOD recalculation by updating camera position
+    if (cameraRef.current) {
+      cloudMaterialRef.current.uniforms.u_cameraPos.value.copy(cameraRef.current.position);
+    }
+  }
+
+
+  }, [soilRadius, sunDistanceX, percentageCloud, lightIntensity, cloudInnerRadiusMultiplier, cloudOuterRadiusMultiplier]);
+
 
   return (
     <div 
