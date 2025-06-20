@@ -5,6 +5,46 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import numeral from "numeral";
 import { useEffect, useState } from "react";
 
+const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
+  value: number;
+  decimals?: number;
+  suffix?: string;
+  className?: string;
+}) => {
+  const [displayValue, setDisplayValue] = useState(value);
+
+  useEffect(() => {
+    const startValue = displayValue;
+    const endValue = value;
+    const duration = 300;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function
+      const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+      const currentValue = startValue + (endValue - startValue) * easeOutCubic;
+
+      setDisplayValue(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return (
+    <span className={className}>
+      {displayValue.toFixed(decimals)}{suffix}
+    </span>
+  );
+};
+
+
 export default function AboutPlanet({
   planetInfo,
 }: {
@@ -125,14 +165,14 @@ export default function AboutPlanet({
                   <div className="grid grid-cols-2 text-center items-center justify-center p-3 m-3">
                     <div>
                       <p className="text-yellow-400 text-sm">TRAVEL SPEED</p>
-                      <p className="text-5xl p-2">{speed.split(" ")[0]} </p>
+                      <p className="text-5xl p-2"><AnimatedNumber value={parseFloat(speed.split(" ")[0])} decimals={2} /> </p>
                       <p className="text-sm">
                         {speed.split(" ")[1]} km per hour
                       </p>
                     </div>
                     <div>
                       <p className="text-yellow-400 text-sm">TRAVEL TIME</p>
-                      <p className="text-5xl p-2">{time.split(" ")[0]} </p>
+                      <p className="text-5xl p-2"><AnimatedNumber value={parseFloat(time.split(" ")[0])} decimals={2} /> </p>
                       <p className="text-sm">{time.split(" ")[1]} years</p>
                     </div>
                   </div>
