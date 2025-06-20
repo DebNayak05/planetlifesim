@@ -48,12 +48,82 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
   );
 };
 
-export default function Sim() {
+// export default function Sim(radiusPlanet:number = 14, massPlanet:number = 146, massSun:number = 1.03, orbitalRadius:number=0.0527) {
+  export default function Sim({
+  soilIndex,
+  soilDisplacementScale,
+  soilShininess,
+  waterIndex,
+  waterColor,
+  waterMultiplier,
+  waterOpacity,
+  waterShininess,
+  waterReflectivity,
+  cloudInnerRadiusMultiplier,
+  cloudOuterRadiusMultiplier,
+  percentageCloud,
+  currentPreset_,
+  cloudColorR,
+  cloudColorG,
+  cloudColorB,
+  borderColor,
+  facingColor,
+  fresnelMultiplier,
+  sunRadius,
+  sunEmissionColor,
+  sunShininess,
+  lightColor,
+  lightIntensity,
+  enableSoil,
+  enableWater,
+  enableCloud ,
+  enableFresnel ,
+
+  radiusPlanet=14,
+  massPlanet=146,
+  massSun=1.03,
+  orbitalRadius=0.0527,
+}:{
+  soilIndex?:number,
+  soilDisplacementScale?:number,
+  soilShininess?:number,
+  waterIndex?:number,
+  waterColor?:number,
+  waterMultiplier?:number,
+  waterOpacity?:number,
+  waterShininess?:number,
+  waterReflectivity?:number,
+  cloudInnerRadiusMultiplier?:number,
+  cloudOuterRadiusMultiplier?:number,
+  percentageCloud?:number,
+  currentPreset_?:string,
+  cloudColorR?:number
+  cloudColorG?:number
+  cloudColorB?:number
+  borderColor?:number,
+  facingColor?:number,
+  fresnelMultiplier?:number,
+  sunRadius?:number,
+  sunEmissionColor?:number,
+  sunShininess?:number,
+  lightColor?:number,
+  lightIntensity?:number,
+  enableSoil?:boolean,
+  enableWater?:boolean,
+  enableCloud?:boolean,
+  enableFresnel?:boolean,
+
+
+  radiusPlanet?:number,
+  massPlanet?:number,
+  massSun?:number,
+  orbitalRadius?:number,
+  }={}){
     // Base values and scaling
-    const radiusP = 14; // Earth radii
-    const massP = 146; // Earth masses
-    const massS = 1.03; // Solar masses
-    const distanceFromSun = 0.0527; // AU
+    const radiusP = radiusPlanet; // Earth radii
+    const massP = massPlanet; // Earth masses
+    const massS = massSun; // Solar masses
+    const distanceFromSun = orbitalRadius; // AU
     const scaleDFS = (700/distanceFromSun); // Convert Distance to AU
     const scaleR = (radiusP/2); // Convert Earth Radius to 1 to 10 scale
 
@@ -68,18 +138,6 @@ export default function Sim() {
     const actualDistance = sunDistanceSlider / scaleDFS; // AU (0.03585 when slider = 700)
     const actualPlanetMass = planetMass; // Earth masses
     const actualSunMass = sunMass; // Solar masses
-
-    // State for sliders (using scaled values for UI)
-    // const [sunDistance, setSunDistance] = useState((distanceFromSun * scaleDFS));
-    // const [planetRadius, setPlanetRadius] = useState((radiusP / scaleR));
-//   const [planetMass, setPlanetMass] = useState(massP);
-//   const [sunMass, setSunMass] = useState(massS);
-
-//   // Convert scaled values back to astronomical units for calculations
-//   const actualRadius = planetRadius * scaleR; // Earth radii
-//   const actualDistance = sunDistance / scaleDFS; // AU
-//   const actualPlanetMass = planetMass; // Earth masses
-//   const actualSunMass = sunMass; // Solar masses
 
     // Physical constants
     const EARTH_RADIUS = 6.371e6; // meters
@@ -178,16 +236,6 @@ export default function Sim() {
       Math.pow(pressureESI, normalizedWeights.pressure),
       1
     );
-    // // Weighted geometric mean
-    // const combinedESI = Math.pow(
-    //   Math.pow(radiusESI, weights.radius / 4) *
-    //   Math.pow(densityESI, weights.density / 4) *
-    //   Math.pow(escapeESI, weights.escapeVelocity / 4) *
-    //   Math.pow(tempESI, weights.temperature / 4) *
-    //   Math.pow(periodESI, weights.orbitalPeriod / 4) *
-    //   Math.pow(pressureESI, weights.pressure / 4),
-    //   4
-    // );
 
     return Math.max(0, Math.min(1, combinedESI));
   }, [derivedParams]);
@@ -225,6 +273,34 @@ export default function Sim() {
       <SpaceScene
         soilRadius={planetRadiusSlider}
         sunDistanceX={sunDistanceSlider}
+        soilIndex={soilIndex}
+        soilDisplacementScale={soilDisplacementScale}
+        soilShininess={soilShininess}
+        waterIndex={waterIndex}
+        waterColor={waterColor}
+        waterMultiplier={waterMultiplier}
+        waterOpacity={waterOpacity}
+        waterShininess={waterShininess}
+        waterReflectivity={waterReflectivity}
+        cloudInnerRadiusMultiplier={cloudInnerRadiusMultiplier}
+        cloudOuterRadiusMultiplier={cloudOuterRadiusMultiplier}
+        percentageCloud={percentageCloud}
+        currentPreset_={currentPreset_}
+        cloudColorR={cloudColorR}
+        cloudColorG={cloudColorG}
+        cloudColorB={cloudColorB}
+        borderColor={borderColor}
+        facingColor={facingColor}
+        fresnelMultiplier={fresnelMultiplier}
+        sunRadius={sunRadius}
+        sunEmissionColor={sunEmissionColor}
+        sunShininess={sunShininess}
+        lightColor={lightColor}
+        lightIntensity={lightIntensity}
+        enableSoil={enableSoil}
+        enableWater={enableWater}
+        enableCloud = {enableCloud}
+        enableFresnel = {enableFresnel}
       />
       
       {/* Controls Panel - Left Side */}
