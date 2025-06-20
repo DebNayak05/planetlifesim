@@ -375,14 +375,14 @@ export default function SpaceScene({
     const planetGroup = sceneRef.current.getObjectByName('planetGroup') as THREE.Group;
     if (planetGroup) {
       const scale = Math.max(Math.min((soilRadius/2),10),1); // 2 is your base radius
-      console.log("scale: " + scale.toString());
+      // console.log("scale: " + scale.toString());
       // const scale = soilRadius / 2;
       planetGroup.scale.setScalar(scale);
     }
 
     if(orbitalControlRef.current)
     {
-      orbitalControlRef.current.minDistance = soilRadius*(5/2);
+      orbitalControlRef.current.minDistance = Math.max(Math.min((soilRadius),10),2)*(5/2);
     }
 
     // Update sun position and light position
@@ -397,30 +397,13 @@ export default function SpaceScene({
       cloudMaterialRef.current.uniforms.u_cloudCover.value = percentageCloud;
     }
 
-  //     if (cloudMaterialRef.current?.uniforms && cameraRef.current) {
-    // const cloudInnerRadius = (Math.min((soilRadius / 2),10)) * cloudInnerRadiusMultiplier * cloudInnerRadiusMultiplier; // Use your multipliers
-    // const cloudOuterRadius = cloudInnerRadius + (cloudOuterRadiusMultiplier - cloudInnerRadiusMultiplier);
-    
-  //   // Update the uniform values directly
-  //   cloudMaterialRef.current.uniforms.u_cloudInnerRadius.value = cloudInnerRadius;
-  //   cloudMaterialRef.current.uniforms.u_cloudOuterRadius.value = cloudOuterRadius;
-
-  //   cloudMaterialRef.current.uniforms.u_cameraPos.value.copy(cameraRef.current.position);
-    
-  //   // Update frustum size for LOD
-  //   const cameraDistance = cameraRef.current.position.length();
-  //   const frustumHeight = 2.0 * Math.tan((75 * Math.PI / 180) / 2.0) * cameraDistance;
-  //   cloudMaterialRef.current.uniforms.u_cameraFrustumSize.value = frustumHeight;
-  // }
 
   if (cloudMaterialRef.current?.uniforms) {
     let radiusChangedTo = Math.max(Math.min((soilRadius),10),2);
     const cloudInnerRadius =  radiusChangedTo * cloudInnerRadiusMultiplier; // Use your multipliers
     const cloudOuterRadius = cloudInnerRadius + ( cloudOuterRadiusMultiplier - cloudInnerRadiusMultiplier);
-    console.log("innerradius: " + cloudInnerRadius.toString());
-    console.log("changed radius: " + radiusChangedTo.toString());
-    // const cloudInnerRadius = Math.max(Math.min((soilRadius),10),1) * cloudInnerRadiusMultiplier;
-    // const cloudOuterRadius = Math.max(Math.min((soilRadius),10),1) * cloudOuterRadiusMultiplier;
+    // console.log("innerradius: " + cloudInnerRadius.toString());
+    // console.log("changed radius: " + radiusChangedTo.toString());
     
     // Update cloud volume bounds
     cloudMaterialRef.current.uniforms.u_cloudInnerRadius.value = cloudInnerRadius;
@@ -429,10 +412,6 @@ export default function SpaceScene({
     // Update coverage
     cloudMaterialRef.current.uniforms.u_cloudCover.value = percentageCloud;
     
-    // Force LOD recalculation by updating camera position
-    // if (cameraRef.current) {
-    //   cloudMaterialRef.current.uniforms.u_cameraPos.value.copy(cameraRef.current.position);
-    // }
   }
 
 
