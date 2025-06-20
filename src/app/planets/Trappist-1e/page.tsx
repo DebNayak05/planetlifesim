@@ -1,10 +1,10 @@
-import SpaceScene from './SpaceScene'
-
+import SpaceScene from "./SpaceScene";
+import AboutPlanetSimulator from "../aboutPlanetSimulator";
 export default function Simulator() {
-    return (
-        <div>
-            <h1>Trappist-1e</h1>
-            <SpaceScene/>
-        </div>
-    )
+  return (
+    <div>
+      <SpaceScene />
+      <AboutPlanetSimulator planetName="Trappist-1e" />
+    </div>
+  );
 }
