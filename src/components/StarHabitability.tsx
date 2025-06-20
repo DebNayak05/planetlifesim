@@ -316,7 +316,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                 <Tooltip>
                     <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
-                        <TooltipContent>
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                             <p>R⊕ = Earth Radii. Affects gravity, density, and atmospheric retention.</p>
                         </TooltipContent>
                     </TooltipTrigger>
@@ -328,7 +328,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                     <TooltipTrigger>
                     <AlertTriangle className="h-4 w-4 text-yellow-500" />
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                     <p>Cannot render the 3D model accurately at extreme values</p>
                     </TooltipContent>
                 </Tooltip>
@@ -360,7 +360,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                     <Tooltip>
                     <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
-                        <TooltipContent>
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                             <p>M⊕ = Earth Masses. Determines escape velocity and atmospheric retention.</p>
                         </TooltipContent>
                     </TooltipTrigger>
@@ -391,7 +391,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                     <Tooltip>
                     <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
-                        <TooltipContent>
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                             <p>M☉ = Solar Masses. Affects luminosity and orbital dynamics.</p>
                         </TooltipContent>
                     </TooltipTrigger>
@@ -422,7 +422,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                     <Tooltip>
                     <TooltipTrigger>
                         <Info className="h-3 w-3 text-gray-400" />
-                        <TooltipContent>
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                             <p>Orbital distance from star. Determines temperature and habitability zone.</p>
                         </TooltipContent>
                     </TooltipTrigger>
@@ -434,7 +434,7 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
                     <TooltipTrigger>
                     <AlertTriangle className="h-4 w-4 text-yellow-500" />
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
                     <p>Cannot render the 3D model accurately at extreme values</p>
                     </TooltipContent>
                 </Tooltip>
@@ -465,9 +465,11 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
         <Card className="bg-black/20 backdrop-blur-md border border-white/10 text-white">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl font-bold">Habitability Assessment</CardTitle>
-            <Badge className={`${habitabilityClass.color} text-white text-sm px-3 py-1`}>
-              {habitabilityClass.class}
-            </Badge>
+            <div className="flex justify-center">
+              <Badge className={`${habitabilityClass.color} text-white text-sm px-3 py-1`}>
+                {habitabilityClass.class}
+              </Badge>
+            </div>
           </CardHeader>
           
           <CardContent className="space-y-6">
@@ -476,7 +478,18 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
               <div className="text-5xl font-bold text-blue-400 mb-2">
                 <AnimatedNumber value={esi} decimals={3} className="text-5xl font-bold text-blue-400" />
               </div>
-              <p className="text-sm text-gray-400">Earth Similarity Index</p>
+              <div className="flex items-center gap-2  justify-center">
+                <p className="text-sm text-gray-400">Earth Similarity Index</p>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-3 w-3 text-gray-400" />
+                    <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                      Scale from 0-1 comparing planet to Earth. Values 0.8-1.0 indicate Earth-like conditions. Based on radius, density, escape velocity, and temperature - with temperature having the strongest influence.
+                    </TooltipContent>
+                  </TooltipTrigger>
+                </Tooltip>
+              </div>
+              
               <div className="w-full bg-gray-700 rounded-full h-3 mt-3">
                 <div 
                   className={`h-3 rounded-full transition-all duration-300 ${
@@ -493,21 +506,54 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="space-y-3">
                 <div>
-                  <p className="text-gray-400">Density</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Density</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Mass per unit volume (g/cm³). Increases with mass, decreases with radius cubed. Earth's density: 5.5 g/cm³. Higher density = rockier composition, better atmospheric retention.
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
+                  
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber value={derivedParams.density} decimals={2} suffix=" ρ⊕" />
                   </p>
                 </div>
                 
                 <div>
-                  <p className="text-gray-400">Escape Velocity</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Escape Velocity</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Minimum speed to escape planet's gravity (km/s). Formula: √(2GM/R). Increases with mass, decreases with radius. Earth's: 11.2 km/s. Higher values retain atmospheres better.
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
+                  
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber value={derivedParams.escapeVelocity} decimals={2} suffix=" v⊕" />
                   </p>
                 </div>
                 
                 <div>
-                  <p className="text-gray-400">Orbital Period</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Orbital Period</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Time to complete one orbit around the star. Increases with orbital distance cubed (Kepler's 3rd Law). Affects seasonal patterns and climate stability.
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
+                  
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber value={derivedParams.orbitalPeriod} decimals={2} suffix=" years" />
                   </p>
@@ -516,21 +562,51 @@ const AnimatedNumber = ({ value, decimals = 2, suffix = "", className = "" }: {
               
               <div className="space-y-3">
                 <div>
-                  <p className="text-gray-400">Temperature</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Temperature</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Average surface temperature. Decreases with orbital distance squared. Affected by stellar mass (luminosity) and atmospheric greenhouse effects. Critical for liquid water
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber value={derivedParams.temperatureK} decimals={0} suffix=" K" />
                   </p>
                 </div>
                 
                 <div>
-                  <p className="text-gray-400">Atmospheric Pressure</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Atmospheric Pressure</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Weight of atmosphere pressing down. Depends on planet mass (gravity), atmospheric composition, and temperature. Earth: 1 bar. Affects liquid water stability
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber value={derivedParams.atmosphericPressure} decimals={2} suffix=" atm" />
                   </p>
                 </div>
                 
                 <div>
-                  <p className="text-gray-400">Surface Gravity</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-gray-400">Surface Gravity</p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-3 w-3 text-gray-400" />
+                        <TooltipContent className="max-w-xs w-60 whitespace-normal break-words">
+                          Gravitational pull at surface. Scales as Mass/Radius². Doubling mass doubles gravity; doubling radius quarters it. Affects atmospheric retention and escape velocity
+                        </TooltipContent>
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </div>
                   <p className="font-mono text-blue-400">
                     <AnimatedNumber 
                       value={actualPlanetMass / (actualRadius * actualRadius)} 
