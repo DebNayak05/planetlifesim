@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { PlanetInfo, TravelOptions } from "@/app/planets/planetInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import numeral from "numeral";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AboutPlanet({
   planetInfo,
@@ -11,20 +11,34 @@ export default function AboutPlanet({
   planetInfo: PlanetInfo;
 }) {
   const [selected, setSelected] = useState("Car");
-  const [speed, setSpeed] = useState("96");
-  const getSpeed = (speed: number) => {
-    var speedString = numeral(speed).format("0.[00] a");
-    if (
-      speedString[speedString.length - 1] == "b" ||
-      speedString[speedString.length - 1] == "m"
-    ) {
-      speedString += "illion";
-    } else if (speedString[speedString.length - 1] == "k") {
-      speedString = speedString.substring(0, speedString.length - 1);
-      speedString += "thousand";
+  const [speed, setSpeed] = useState("");
+  const [time, setTime] = useState("");
+  const getFormat = (str: string) => {
+    if (str[str.length - 1] == "b" || str[str.length - 1] == "m") {
+      str += "illion";
+    } else if (str[str.length - 1] == "k") {
+      str = str.substring(0, str.length - 1);
+      str += "thousand";
     }
-    setSpeed(speedString);
+    return str;
   };
+  const updateSpeedAndTime = (travelOption: string, speed: number) => {
+    var speedString = numeral(speed).format("0.[00] a");
+    speedString = getFormat(speedString);
+    setSelected(travelOption);
+    setSpeed(speedString);
+    const distance = planetInfo.distance;
+    const lightYearInKm = 9.461e12;
+    const distanceInKm = distance * lightYearInKm;
+    const timeInHours = distanceInKm / speed;
+    const timeInYears = Math.floor(timeInHours / (24 * 365.25));
+    var timeString = numeral(timeInYears).format("0.[00] a");
+    timeString = getFormat(timeString);
+    setTime(timeString);
+  };
+  useEffect(() => {
+    updateSpeedAndTime("Car", 96);
+  }, []);
   return (
     <div>
       <Tabs
@@ -99,8 +113,7 @@ export default function AboutPlanet({
                           }
                           `}
                           onClick={() => {
-                            setSelected(value.label);
-                            getSpeed(value.speed);
+                            updateSpeedAndTime(value.label, value.speed);
                           }}
                         >
                           <div>{value.icon()}</div>
@@ -119,8 +132,8 @@ export default function AboutPlanet({
                     </div>
                     <div>
                       <p className="text-yellow-400 text-sm">TRAVEL TIME</p>
-                      <p className="text-5xl p-2">hELLO </p>
-                      <p className="text-sm">years</p>
+                      <p className="text-5xl p-2">{time.split(" ")[0]} </p>
+                      <p className="text-sm">{time.split(" ")[1]} years</p>
                     </div>
                   </div>
                   <div></div>

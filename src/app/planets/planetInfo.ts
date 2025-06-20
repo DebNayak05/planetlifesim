@@ -124,7 +124,7 @@ planetMap.set("Kepler-452b", {
   ],
 });
 
-planetMap.set("Kepler-22b", {number
+planetMap.set("Kepler-22b", {
   quickInfo: {
     yearOfDiscovery: "2011",
     planetType: "Super-Earth (possible ocean-world)",
@@ -245,6 +245,7 @@ planetMap.set("Proxima_Centauri-b", {
     hostStarRadius: "0.119 R☉",
     observatory: "European Southern Observatory (HARPS spectrograph)",
   },
+  distance : 4,
   description:
     "A terrestrial super-Earth orbiting the nearest star, Proxima Centauri. At ~0.05 AU with 11 day period, modest eccentricity, it lies in the habitable zone though strong stellar flares may challenge its atmosphere.",
   story:
