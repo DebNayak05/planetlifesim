@@ -4,6 +4,9 @@
 
 **ExoCosmos** is an interactive web-based simulation that allows users to visualize real exoplanets in 3D and experiment with planetary and stellar properties to understand habitability using the Earth Similarity Index (ESI). Inspired by NASA’s *Eyes on Exoplanets*, this project extends the concept by allowing users to actively modify planetary conditions to explore how small changes impact the potential for life.
 
+
+📝 **[Read the complete technical deep-dive](https://dev.to/devesh0099/building-a-3d-exoplanet-simulator-with-real-time-habitability-analysis-29b8)**
+
 ---
 
 ## Features
